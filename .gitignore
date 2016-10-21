@@ -5,6 +5,11 @@
 bin/
 .settings/
 .classpath
+.cache-main
+.cache-tests
+.project
+project/
+scalastyle-config.xml
 
 # Intellij
 .idea/
