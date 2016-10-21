@@ -1,4 +1,4 @@
-htwg-scala-seed
+Durak
 =========================
 
 This is a seed project to create a basic scala project as used in the
