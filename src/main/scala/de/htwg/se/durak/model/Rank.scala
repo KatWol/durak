@@ -5,6 +5,7 @@ sealed trait Rank {
   def pointValue: Int
   override def toString = value
   def >(that: Rank):Boolean = this.pointValue > that.pointValue
+  def <(that: Rank):Boolean = this.pointValue < that.pointValue
 }
 
 object Rank {

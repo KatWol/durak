@@ -45,6 +45,14 @@ class RankSpec extends WordSpec with Matchers{
       Rank.Two > Rank.Three should be (false)
       Rank.Nine > Rank.Nine should be (false)
       Rank.Four > Rank.Ace should be (false)
+      
+      Rank.Five < Rank.Four should be (false)
+      Rank.Four < Rank.Three should be (false)
+      Rank.Three < Rank.Two should be (false)
+      
+      Rank.Two < Rank.Three should be (true)
+      Rank.Nine < Rank.Nine should be (false)
+      Rank.Four < Rank.Ace should be (true)
     }
     
     "have a string representation" in {

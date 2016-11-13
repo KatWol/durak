@@ -6,6 +6,7 @@ case class Card(suit: Suit, rank: Rank) {
   }
   
   def >(that: Card):Boolean = this.rank > that.rank
+  def <(that: Card):Boolean = this.rank < that.rank
   
   def isSameSuit(that: Card):Boolean = this.suit == that.suit
 }

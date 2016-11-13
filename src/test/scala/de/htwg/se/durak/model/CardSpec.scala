@@ -21,6 +21,9 @@ class CardSpec extends WordSpec with Matchers {
     "be compareable to other cards in rank" in {
       card > Card(Suit.Spades, Rank.King) should be(true)
       card > Card(Suit.Spades, Rank.Ace) should be(false)
+      card < Card(Suit.Spades, Rank.King) should be(false)
+      card < Card(Suit.Spades, Rank.Ace) should be(false)
+      Card(Suit.Spades, Rank.King) < card should be(true)
       Card(Suit.Hearts, Rank.Ten) > Card(Suit.Spades, Rank.Jack) should be(false)
     }
     
