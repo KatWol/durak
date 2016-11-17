@@ -6,10 +6,10 @@ sealed trait Suit {
 }
 
 object Suit {
-  case object Clubs extends Suit {val value="clubs"}
-  case object Spades extends Suit {val value="spades"}
-  case object Hearts extends Suit {val value="hearts"}
-  case object Diamonds extends Suit {val value="diamonds"}
-  
+  case object Clubs extends Suit { val value = "clubs" }
+  case object Spades extends Suit { val value = "spades" }
+  case object Hearts extends Suit { val value = "hearts" }
+  case object Diamonds extends Suit { val value = "diamonds" }
+
   val suits = List(Clubs, Spades, Hearts, Diamonds);
 }
