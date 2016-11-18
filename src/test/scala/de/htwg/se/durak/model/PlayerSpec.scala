@@ -1,7 +1,10 @@
 package de.htwg.se.durak.model
 
 import org.scalatest._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class PlayerSpec extends WordSpec with Matchers {
   "A Player" should {
     val player1 = Player("Max", 1, List[Card]())
@@ -21,7 +24,7 @@ class PlayerSpec extends WordSpec with Matchers {
       } should have message ("Player does not have this card in his/her hand")
     }
     
-    "should be defender or attacker or neither" in {
+    "should be defender or attacker or inactive" in {
       player1.isDefender should be (false)
       player1.isAttacker should be (false)
       val defendingPlayer1 = player1.makeDefender
@@ -30,17 +33,10 @@ class PlayerSpec extends WordSpec with Matchers {
       val attackingPlayer1 = player1.makeAttacker
       attackingPlayer1.isAttacker should be (true)
       attackingPlayer1.isDefender should be (false)
-      
-      a [IllegalArgumentException] should be thrownBy {
-        Player("Marina", 3, List[Card](), true, true)
-      }
-      the [IllegalArgumentException] thrownBy {
-        Player("Marina", 3, List[Card](), true, true)
-      } should have message ("A player can only be attacker or defender")
     }
     
     "have a string representation" in {
-      player1.toString should be ("Player [name: Max, number: 1, cards: List(), defender: false, attacker: false]")
+      player1.toString should be ("Player [name: Max, number: 1, cards: List(), status: inactive]")
     }
   }
 }

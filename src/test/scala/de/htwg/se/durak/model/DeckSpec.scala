@@ -1,7 +1,10 @@
 package de.htwg.se.durak.model
 
 import org.scalatest._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class DeckSpec extends WordSpec with Matchers{
   
   "A Deck" when {

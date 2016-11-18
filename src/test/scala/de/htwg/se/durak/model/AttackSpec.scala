@@ -1,7 +1,10 @@
 package de.htwg.se.durak.model
 
 import org.scalatest._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class AttackSpec extends WordSpec with Matchers{
   "An Attack" should {
     val attack = Attack(attackingCard = Card(Suit.Clubs, Rank.Seven))
