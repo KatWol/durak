@@ -11,5 +11,5 @@ object Suit {
   case object Hearts extends Suit { val value = "hearts" }
   case object Diamonds extends Suit { val value = "diamonds" }
 
-  val suits = List(Clubs, Spades, Hearts, Diamonds);
+  val values = List(Clubs, Spades, Hearts, Diamonds);
 }

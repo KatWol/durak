@@ -1,11 +1,10 @@
 package de.htwg.se.durak.model
 
-sealed trait Rank {
+sealed trait Rank extends Ordered[Rank] {
   def value: String;
   def pointValue: Int
   override def toString = value
-  def >(that: Rank): Boolean = this.pointValue > that.pointValue
-  def <(that: Rank): Boolean = this.pointValue < that.pointValue
+  override def compare(that: Rank): Int = this.pointValue - that.pointValue
 }
 
 object Rank {
@@ -23,5 +22,5 @@ object Rank {
   case object Three extends Rank { val value = "three"; val pointValue = 3 }
   case object Two extends Rank { val value = "two"; val pointValue = 2 }
 
-  val ranks = List(Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace)
+  val values = List(Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace)
 }

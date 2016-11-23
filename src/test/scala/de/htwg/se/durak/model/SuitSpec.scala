@@ -5,14 +5,14 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class SuitSpec extends WordSpec with Matchers{
+class SuitSpec extends WordSpec with Matchers {
   "A Suit" should {
     "only have allowed values" in {
       val allowedSuits = Array("clubs", "spades", "hearts", "diamonds")
-      Suit.suits.foreach {e => allowedSuits.contains(e.toString) should be(true)}
-      
+      Suit.values.foreach { e => allowedSuits.contains(e.toString) should be(true) }
+
       val notAllowedSuits = Array("red", "black")
-      Suit.suits.foreach {e => notAllowedSuits.contains(e.toString) should be(false)}
+      Suit.values.foreach { e => notAllowedSuits.contains(e.toString) should be(false) }
     }
   }
 }

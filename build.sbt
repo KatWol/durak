@@ -16,7 +16,4 @@ libraryDependencies ++= {
 }
 
 libraryDependencies += "junit" % "junit" % "4.8" % "test"
-
-fork in run := true
-
 fork in run := true
