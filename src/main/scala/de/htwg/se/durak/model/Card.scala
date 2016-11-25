@@ -13,5 +13,7 @@ case class Card(suit: Suit, rank: Rank, isTrump: Boolean = false) extends Ordere
       else 1
     }
   }
+  
+  def isSameSuit(that: Card): Boolean = this.suit == that.suit
 }
 

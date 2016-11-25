@@ -3,5 +3,5 @@ import de.htwg.se.durak.model._
 
 
 trait IRound  {
-  def IRound(deck: Deck, players: List[Player], activePlayer: Player): Tuple3[Deck, List[Player], Player]  
+  def IRound(deck: Deck, players: List[Player], activePlayerNumber: Int): Tuple3[Deck, List[Player], Int]  
 }

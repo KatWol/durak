@@ -5,6 +5,7 @@ import scala.util.Random
 case class Deck(cards: List[Card]) {
   def this(startWith: Rank, trumpSuit: Suit) = {
     this(Deck.getInitialCards(startWith, trumpSuit))
+    this.shuffle
   }
   def isEmpty: Boolean = numberOfCards == 0
   def numberOfCards: Int = this.cards.size
