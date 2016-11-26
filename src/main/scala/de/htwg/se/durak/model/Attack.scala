@@ -1,7 +1,7 @@
 package de.htwg.se.durak.model
 
 case class Attack(attackingCard: Card, defendingCard: Card = null) {
-  def defendAttack(card: Card): Attack = {
+  def defend(card: Card): Attack = {
     if (isValid(card)) this.copy(defendingCard = card)
     else if (isCompleted) throw new IllegalArgumentException("This attack is already completed")
     else throw new IllegalArgumentException("Invalid card for this attack")

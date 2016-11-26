@@ -29,10 +29,18 @@ class RoundSpec extends WordSpec with Matchers {
       round.getActivePlayer() should be (player1)
     }
     
-    "start with the active player starting an attack" in {
-      round.startFirstAttack(card2)
+    "start with an attack and only allow attacks according to the rules" in {
+      round.startAttack(card2, player1)
       round.attacks should contain (Attack(card2))
       round.getActivePlayer().cards should not contain (card2)
+      
+      the[IllegalArgumentException] thrownBy {
+        round.startAttack(card3, player1)
+      } should have message ("The rank of this card is not on the table yet")
+      
+      the[IllegalArgumentException] thrownBy {
+        round.startAttack(card4, player2)
+      } should have message ("The player is currently not allowed to attack")
     }
     
     "check if a value is already on the table" in {
@@ -45,14 +53,22 @@ class RoundSpec extends WordSpec with Matchers {
       round.isRankOnTable(Rank.Two) should be (false)
     }
     
-    "check if the card put on the table is a valid card" ignore {
-      round.isValid(card2) should be (true)
-      round.isValid(card5) should be (false)
-    }
-    
-    "continue with the defending player defending the attack" ignore {
-      round.startAttack(card2)
-      round.defendAttack(card4)
+    "continue with the defending player defending the attack and only allow defences according to the rules" in {
+      round.startAttack(card2, player1)
+      
+      the [IllegalArgumentException] thrownBy {
+        round.defendAttack(card4, player2, Attack(card3))
+      } should have message ("This attack does not exist")
+      
+      the [IllegalArgumentException] thrownBy {
+        round.defendAttack(card1, player1, Attack(card2))
+      } should have message ("This player is currently not allowed to defend")
+      
+      the [IllegalArgumentException] thrownBy {
+        round.defendAttack(card6, player2, Attack(card2))
+      } should have message ("Invalid card for this attack")
+      
+      round.defendAttack(card4, player2, Attack(card2))
       round.attacks should contain (Attack(card2, card4))
     }
   }

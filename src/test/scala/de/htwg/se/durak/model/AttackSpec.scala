@@ -16,15 +16,15 @@ class AttackSpec extends WordSpec with Matchers {
     }
     
     "should be defended" in {
-      attack.defendAttack(Card(Suit.Hearts, Rank.Nine)) should be (attack2)
+      attack.defend(Card(Suit.Hearts, Rank.Nine)) should be (attack2)
     }
     
     "should throw an error if it was previous completed" in {
       an[IllegalArgumentException] should be thrownBy{
-        attack2.defendAttack(Card(Suit.Hearts, Rank.Ten))
+        attack2.defend(Card(Suit.Hearts, Rank.Ten))
       }
       the[IllegalArgumentException] thrownBy {
-        attack2.defendAttack(Card(Suit.Hearts, Rank.Ten))
+        attack2.defend(Card(Suit.Hearts, Rank.Ten))
       } should have message ("This attack is already completed")
     }
     
@@ -39,10 +39,10 @@ class AttackSpec extends WordSpec with Matchers {
     
     "should throw an error if the defending card is invalid" in {
       an[IllegalArgumentException] should be thrownBy{
-        attack.defendAttack(Card(Suit.Clubs, Rank.Ten))
+        attack.defend(Card(Suit.Clubs, Rank.Ten))
       }
       the[IllegalArgumentException] thrownBy {
-        attack.defendAttack(Card(Suit.Clubs, Rank.Ten))
+        attack.defend(Card(Suit.Clubs, Rank.Ten))
       } should have message ("Invalid card for this attack")
     }
     
