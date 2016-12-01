@@ -12,5 +12,5 @@ case class Player(name: String, number: Int, cards: List[Card], status: PlayerSt
   def setStatus(status: PlayerStatus): Player = this.copy(status = status)
   def numbersOfCards: Int = cards.size
   def hasCard(card: Card): Boolean = cards.contains(card)
-  override def toString: String = "Player [name: " + name + ", number: " + number + ", cards: " + cards + ", status: " + status + "]"
+  override def toString: String = "Player [name: " + name + ", cards: " + cards + ", status: " + status + "]"
 }

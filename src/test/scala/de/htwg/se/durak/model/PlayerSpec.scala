@@ -36,10 +36,10 @@ class PlayerSpec extends WordSpec with Matchers {
       attackingPlayer1.isAttacker should be(true)
       attackingPlayer1.isDefender should be(false)
     }
-    
+
     "should be checked whether (s)he has a card on hand" in {
-      player1.hasCard(Card(Suit.Hearts, Rank.Seven)) should be (false)
-      player2.hasCard(Card(Suit.Diamonds, Rank.Nine)) should be (true)
+      player1.hasCard(Card(Suit.Hearts, Rank.Seven)) should be(false)
+      player2.hasCard(Card(Suit.Diamonds, Rank.Nine)) should be(true)
     }
 
     "have a string representation" in {

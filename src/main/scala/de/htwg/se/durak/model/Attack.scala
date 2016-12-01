@@ -6,9 +6,9 @@ case class Attack(attackingCard: Card, defendingCard: Card = null) {
     else if (isCompleted) throw new IllegalArgumentException("This attack is already completed")
     else throw new IllegalArgumentException("Invalid card for this attack")
   }
-  
+
   def isCompleted: Boolean = defendingCard != null
-  
+
   def isValid(card: Card): Boolean = {
     if (isCompleted) false
     else if (card <= attackingCard) false

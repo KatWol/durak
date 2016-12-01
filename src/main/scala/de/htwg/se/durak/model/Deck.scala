@@ -7,6 +7,7 @@ case class Deck(cards: List[Card]) {
     this(Deck.getInitialCards(startWith, trumpSuit))
     this.shuffle
   }
+
   def isEmpty: Boolean = numberOfCards == 0
   def numberOfCards: Int = this.cards.size
   def drawNCards(n: Int): Tuple2[List[Card], Deck] = {
