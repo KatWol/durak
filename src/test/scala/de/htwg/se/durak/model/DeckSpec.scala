@@ -140,6 +140,10 @@ class DeckSpec extends WordSpec with Matchers {
         newDeck.toString should be("Deck [size: 3]")
         deck.toString should be("Deck [size: 36]")
       }
+
+      "be able to print out all cards" in {
+        newDeck.print should be(());
+      }
     }
 
   }

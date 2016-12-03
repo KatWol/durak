@@ -43,7 +43,12 @@ class PlayerSpec extends WordSpec with Matchers {
     }
 
     "have a string representation" in {
-      player1.toString should be("Player [name: Max, number: 1, cards: List(), status: inactive]")
+      player1.toString should be("Player [name: Max, cards: List(), status: inactive]")
+    }
+
+    "return the number of cards in the players hand" in {
+      player1.numberOfCards should be(0);
+      player2.numberOfCards should be(2);
     }
   }
 }

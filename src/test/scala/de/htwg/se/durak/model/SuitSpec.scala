@@ -14,5 +14,9 @@ class SuitSpec extends WordSpec with Matchers {
       val notAllowedSuits = Array("red", "black")
       Suit.values.foreach { e => notAllowedSuits.contains(e.toString) should be(false) }
     }
+
+    "return a random trump suit" in {
+      Suit.values.contains(Suit.getRandomTrumpSuit) should be(true)
+    }
   }
 }

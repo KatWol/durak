@@ -19,7 +19,7 @@ class AttackSpec extends WordSpec with Matchers {
       attack.defend(Card(Suit.Hearts, Rank.Nine)) should be(attack2)
     }
 
-    "should throw an error if it was previous completed" in {
+    "should throw an error if it was previously completed" in {
       an[IllegalArgumentException] should be thrownBy {
         attack2.defend(Card(Suit.Hearts, Rank.Ten))
       }
