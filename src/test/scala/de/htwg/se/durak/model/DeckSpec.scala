@@ -31,17 +31,17 @@ class DeckSpec extends WordSpec with Matchers {
     }
 
     "non-empty" should {
-      val deck = new Deck(Rank.Six, Suit.Hearts)
+      val deck = new Deck(Rank.Six)
 
       "not be empty" in {
         deck.isEmpty should be(false)
       }
 
-      "have 36 cards if full Durak Deck" in {
+      "have 36 cards if Durak Deck starts with rank six" in {
         deck.numberOfCards should be(36)
       }
 
-      "have the correct cards if full Durak Deck" in {
+      "have the correct cards if full Durak Deck starts with rank six" in {
         deck.cards.contains(Card(Suit.Spades, Rank.Six)) should be(true)
         deck.cards.contains(Card(Suit.Spades, Rank.Seven)) should be(true)
         deck.cards.contains(Card(Suit.Spades, Rank.Eight)) should be(true)
@@ -62,15 +62,15 @@ class DeckSpec extends WordSpec with Matchers {
         deck.cards.contains(Card(Suit.Clubs, Rank.King)) should be(true)
         deck.cards.contains(Card(Suit.Clubs, Rank.Ace)) should be(true)
 
-        deck.cards.contains(Card(Suit.Hearts, Rank.Six, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Seven, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Eight, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Nine, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Ten, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Jack, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Queen, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.King, true)) should be(true)
-        deck.cards.contains(Card(Suit.Hearts, Rank.Ace, true)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Six)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Seven)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Eight)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Nine)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Ten)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Jack)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Queen)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.King)) should be(true)
+        deck.cards.contains(Card(Suit.Hearts, Rank.Ace)) should be(true)
 
         deck.cards.contains(Card(Suit.Diamonds, Rank.Six)) should be(true)
         deck.cards.contains(Card(Suit.Diamonds, Rank.Seven)) should be(true)

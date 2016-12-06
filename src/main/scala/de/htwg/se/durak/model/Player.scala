@@ -1,6 +1,6 @@
 package de.htwg.se.durak.model
 
-case class Player(name: String, number: Int, cards: List[Card], status: PlayerStatus = PlayerStatus.Inactive) {
+case class Player(name: String, number: Int, cards: List[Card], status: PlayerStatus = PlayerStatus.Inactive, hisTurn: Boolean = false) {
   def takeCards(card: Card): Player = this.copy(cards = card :: this.cards)
   def takeCards(cards: List[Card]): Player = this.copy(cards = cards ::: this.cards)
   def putDownCard(card: Card): (Card, Player) = {
@@ -12,5 +12,7 @@ case class Player(name: String, number: Int, cards: List[Card], status: PlayerSt
   def setStatus(status: PlayerStatus): Player = this.copy(status = status)
   def numbersOfCards: Int = cards.size
   def hasCard(card: Card): Boolean = cards.contains(card)
-  override def toString: String = "Player [name: " + name + ", cards: " + cards + ", status: " + status + "]"
+  override def toString: String = "Player [name: " + name + ", number: " + number + ", cards: " + cards + ", status: " + status + ", hisTurn: " + hisTurn + "]"
+  def setTrumpSuit(trumpSuit: Suit): Player = this.copy(cards = (for (card <- cards) yield { card.copy(isTrump = card.suit == trumpSuit) }))
+  def getSmallestTrumpCard = (for (card <- cards if card.isTrump) yield card).min
 }
