@@ -54,7 +54,7 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
     for (player <- players) yield {
       if (player.number == number) player.copy(status = PlayerStatus.Attacker, hisTurn = true) //Erster Angreifer
       else if (player.number == ((number + 1) % getNumberOfPlayers)) player.copy(status = PlayerStatus.Defender, hisTurn = false) //Verteidiger
-      else if (player.number == ((number + 2) % getNumberOfPlayers)) player.copy(status = PlayerStatus.Attacker, hisTurn = false) //zweiter Angreifer
+      else if ((getNumberOfPlayers > 2) && (player.number == ((number + 2) % getNumberOfPlayers))) player.copy(status = PlayerStatus.Attacker, hisTurn = false) //zweiter Angreifer
       else player //restlichen Spieler
     }
   }
