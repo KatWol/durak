@@ -13,13 +13,13 @@ class RoundSpec extends WordSpec with Matchers {
   val card4 = Card(Suit.Clubs, Rank.Queen)
   val card5 = Card(Suit.Hearts, Rank.Seven, true)
   val card6 = Card(Suit.Spades, Rank.Ace)
-  var player1 = Player("Max", 1, List[Card](card1, card2, card3), PlayerStatus.Attacker)
-  var player2 = Player("Erika", 2, List[Card](card4, card5, card6), PlayerStatus.Defender)
+  var player1 = Player("Max", 1, List[Card](card1, card2, card3), PlayerStatus.Attacker, true)
+  var player2 = Player("Erika", 2, List[Card](card4, card5, card6), PlayerStatus.Defender, true)
   var round = new Round(new Deck(Rank.Seven), List[Player](player1, player2), activePlayerNumber = 1)
 
   override def withFixture(test: NoArgTest) = {
-    player1 = Player("Max", 1, List[Card](card1, card2, card3), PlayerStatus.Attacker)
-    player2 = Player("Erika", 2, List[Card](card4, card5, card6), PlayerStatus.Defender)
+    player1 = Player("Max", 1, List[Card](card1, card2, card3), PlayerStatus.Attacker, true)
+    player2 = Player("Erika", 2, List[Card](card4, card5, card6), PlayerStatus.Defender, true)
     round = new Round(new Deck(Rank.Seven), List[Player](player1, player2), activePlayerNumber = 1)
     test()
   }
