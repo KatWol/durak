@@ -10,6 +10,8 @@ case class Player(name: String, number: Int, cards: List[Card], status: PlayerSt
   def isDefender: Boolean = status == PlayerStatus.Defender
   def isAttacker: Boolean = status == PlayerStatus.Attacker
   def setStatus(status: PlayerStatus): Player = this.copy(status = status)
+  def changeTurn(): Player = this.copy(hisTurn = !hisTurn)
+  def setTurn(hisTurn: Boolean): Player = this.copy(hisTurn = hisTurn)
   def numberOfCards: Int = cards.size
   def hasCard(card: Card): Boolean = cards.contains(card)
   override def toString: String = "Player [name: " + name + ", number: " + number + ", cards: " + cards + ", status: " + status + ", hisTurn: " + hisTurn + "]"

@@ -45,5 +45,29 @@ class PlayerSpec extends WordSpec with Matchers {
     "have a string representation" in {
       player1.toString should be("Player [name: Max, number: 1, cards: List(), status: inactive, hisTurn: false]")
     }
+
+    "update whether its his turn" in {
+      player1.changeTurn() should be(Player("Max", 1, List[Card](), PlayerStatus.Inactive, true))
+      Player("Max", 1, List[Card](), PlayerStatus.Inactive, true).changeTurn() should be(player1)
+    }
+
+    "return the number of cards in his hand" in {
+      player1.numberOfCards should be(0)
+      player2.numberOfCards should be(2)
+    }
+
+    var player = Player("Jakob", 3, List(Card(Suit.Clubs, Rank.Five), Card(Suit.Clubs, Rank.Nine), Card(Suit.Hearts, Rank.Two), Card(Suit.Clubs, Rank.Three)))
+
+    "set the trump suit for all its cards" in {
+      player = player.setTrumpSuit(Suit.Clubs)
+      player.cards.contains(Card(Suit.Clubs, Rank.Five, true)) should be(true)
+      player.cards.contains(Card(Suit.Clubs, Rank.Three, true)) should be(true)
+      player.cards.contains(Card(Suit.Clubs, Rank.Nine, true)) should be(true)
+      player.cards.contains(Card(Suit.Hearts, Rank.Two)) should be(true)
+    }
+
+    "return his smallest trump card" in {
+      player.getSmallestTrumpCard should be(Card(Suit.Clubs, Rank.Three, true))
+    }
   }
 }

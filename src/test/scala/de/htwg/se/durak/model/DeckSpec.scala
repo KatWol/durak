@@ -144,6 +144,16 @@ class DeckSpec extends WordSpec with Matchers {
       "be able to print out all cards" in {
         newDeck.print should be(());
       }
+
+      var deck2 = Deck(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true)))
+      "define the trump suit and add the first card to the back of the deck" in {
+        deck2 = deck2.defineTrumpCard
+        deck2 should be(Deck(List(Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true), Card(Suit.Spades, Rank.Two, true))))
+      }
+
+      "return the current trump suit" in {
+        deck2.getTrumpSuit should be(Suit.Spades)
+      }
     }
 
   }
