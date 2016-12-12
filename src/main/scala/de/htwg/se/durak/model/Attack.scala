@@ -18,4 +18,10 @@ case class Attack(attackingCard: Card, defendingCard: Card = null) {
     else if (!(attackingCard.isSameSuit(card)) && !card.isTrump) false
     else true
   }
+
+  //Gibt eine Liste aller Karten in dem Attack zurück
+  def getCards: List[Card] = {
+    if (defendingCard != null) List[Card](attackingCard, defendingCard)
+    else List[Card](attackingCard)
+  }
 }
