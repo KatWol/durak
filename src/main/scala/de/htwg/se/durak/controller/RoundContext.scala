@@ -2,8 +2,10 @@ package de.htwg.se.durak.controller
 
 import de.htwg.se.durak.model._
 
+//State ändern sich in der folgenden Reihenfolge:
+//FirstAttackersFirstTurn -> DefendersTurn -> SecondAttackersTurn -> FirstAttackersTurn -> DefendersTurn ... -> RoundFinished
 class RoundContext(var deck: Deck, var players: List[Player]) {
-  private[controller] var state: RoundState = new FirstAttackersTurn
+  private[controller] var state: RoundState = new FirstAttackersFirstTurn
   var attacks = List[Attack]()
   var turnMissed = false
 

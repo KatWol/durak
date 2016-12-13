@@ -48,8 +48,8 @@ class RoundContextSpec extends WordSpec with Matchers {
 
   "A Round with 2 players" when {
     "no player misses a turn" should {
-      "start in the FirstAttackersTurn state" in {
-        round.state shouldBe a[FirstAttackersTurn]
+      "start in the FirstAttackersFirstTurn state" in {
+        round.state shouldBe a[FirstAttackersFirstTurn]
       }
 
       "return the current player" in {
@@ -58,6 +58,12 @@ class RoundContextSpec extends WordSpec with Matchers {
 
       "return the players whose turn it is after the current player" in {
         round.getNextCurrentPlayer() should be(player2)
+      }
+
+      "not let the attacker miss a turn at the beginning of the round" in {
+        the[IllegalArgumentException] thrownBy {
+          round.endTurn
+        } should have message ("Must play a card at the beginning of a round")
       }
 
       "let the attacker put down a card" in {
