@@ -10,10 +10,7 @@ case class Deck(cards: List[Card]) {
 
   def isEmpty: Boolean = numberOfCards == 0
   def numberOfCards: Int = this.cards.size
-  def drawNCards(n: Int): Tuple2[List[Card], Deck] = {
-    if (n <= numberOfCards) new Tuple2(cards.slice(0, n), new Deck(cards.slice(n, this.numberOfCards)))
-    else throw new IndexOutOfBoundsException("Not enough cards in the deck")
-  }
+  def drawNCards(n: Int): Tuple2[List[Card], Deck] = new Tuple2(cards.slice(0, Math.min(numberOfCards, n)), new Deck(cards.slice(Math.min(numberOfCards, n), numberOfCards)))
   def shuffle: Deck = Deck(Random.shuffle(cards))
   override def toString: String = "Deck [size: " + numberOfCards + "]"
   def print: Unit = cards.foreach { println }
@@ -29,7 +26,7 @@ case class Deck(cards: List[Card]) {
     //aktuelles Deck wird ausgehend von zweiten Karte durchlaufen, zu neuem Deck hinzugefügt, zum Schluss die erste Karte angehängt
     //dabei wird isTrump entsprechend der Trumpfkarte (ist die ursprünglich erste Karte) neu gesetzt
     Deck(
-      (for (card <- cards if card != cards(0)) yield { card.copy(isTrump = card.suit == cards(0).suit) }) :+ cards(0).copy(isTrump = true)
+      (for (card <- cards if card != cards(0)) yield { card.copy(isTrump = (card.suit == cards(0).suit)) }) :+ cards(0).copy(isTrump = true)
     )
   }
 

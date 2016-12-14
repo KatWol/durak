@@ -20,13 +20,8 @@ class DeckSpec extends WordSpec with Matchers {
         emptyDeck.numberOfCards should be(0);
       }
 
-      "produce IndexOutOfBoundsException when drawNCards is invoked" in {
-        an[IndexOutOfBoundsException] should be thrownBy {
-          emptyDeck.drawNCards(1)
-        }
-        the[IndexOutOfBoundsException] thrownBy {
-          emptyDeck.drawNCards(1)
-        } should have message ("Not enough cards in the deck")
+      "return a tuple with an empty list and an empty deck if the deck is empty" in {
+        emptyDeck.drawNCards(1) should be((List[Card](), Deck(List[Card]())))
       }
     }
 
@@ -120,13 +115,8 @@ class DeckSpec extends WordSpec with Matchers {
         newDeck.drawNCards(2)._1 should be(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three)))
       }
 
-      "produce a IndexOutOfBoundsException when too many cards are drawn" in {
-        an[IndexOutOfBoundsException] should be thrownBy {
-          newDeck.drawNCards(6)
-        }
-        the[IndexOutOfBoundsException] thrownBy {
-          deck.drawNCards(37)
-        } should have message ("Not enough cards in the deck")
+      "return all cards left in the deck if more cards then are left in the deck are drawn" in {
+        newDeck.drawNCards(6) should be(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Diamonds, Rank.Seven)), new Deck(List[Card]()))
       }
 
       "return a new Deck without the top N cards when N cards are drawn" in {

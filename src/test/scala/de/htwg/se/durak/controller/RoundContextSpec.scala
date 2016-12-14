@@ -4,6 +4,7 @@ import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
 import de.htwg.se.durak.model._
+import de.htwg.se.durak.controller.round._
 
 class RoundContextSpec extends WordSpec with Matchers {
   val card1 = Card(Suit.Hearts, Rank.Jack, true)
@@ -152,6 +153,10 @@ class RoundContextSpec extends WordSpec with Matchers {
       }
 
       "end when the maximum number of attacks are reached and all attacks are defended" in {
+        the[IllegalArgumentException] thrownBy {
+          round.playCard(card6)
+        } should have message ("The rank of this card is not on the table yet")
+
         round.playCard(card1)
         round.endTurn
         round.playCard(card7, Attack(card1))
@@ -170,8 +175,8 @@ class RoundContextSpec extends WordSpec with Matchers {
         round.endTurn
       }
 
-      "change to state RoundFinished when maximum number of attacks are reached!" in {
-        round.state shouldBe a[RoundFinished]
+      "change to state RoundFinishedDefenderWon when maximum number of attacks are reached" in {
+        round.state shouldBe a[RoundFinishedDefenderWon]
       }
 
       "set correct player statuses for the next round after the round is finished" in {
@@ -204,7 +209,7 @@ class RoundContextSpec extends WordSpec with Matchers {
         round.playCard(card8, Attack(card2))
         round.endTurn
 
-        round.state shouldBe a[RoundFinished]
+        round.state shouldBe a[RoundFinishedDefenderLost]
 
       }
 
@@ -235,7 +240,7 @@ class RoundContextSpec extends WordSpec with Matchers {
         round.endTurn
         round.endTurn
 
-        round.state shouldBe a[RoundFinished]
+        round.state shouldBe a[RoundFinishedDefenderWon]
       }
 
       "set correct player statuses for the next round after the round is finished" in {
@@ -408,13 +413,28 @@ class RoundContextSpec extends WordSpec with Matchers {
         rounda.playCard(card6a) //1. Attacker
 
         rounda.state shouldBe a[DefendersTurn]
+
+        val newRound = new RoundContext(new Deck(Rank.Seven), List[Player](
+          Player("Kathrin", 0, List[Card](Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven)), PlayerStatus.Attacker, true),
+          Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
+        ))
+
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+
+        newRound.state shouldBe a[DefendersTurn]
       }
 
       "end when the maximum number of attacks is reached and all attacks are defended" in {
         rounda.playCard(card12a, Attack(card3a))
         rounda.endTurn
 
-        rounda.state shouldBe a[RoundFinished]
+        rounda.state shouldBe a[RoundFinishedDefenderWon]
       }
 
       "set correct player statuses for the next round after the round is finished" in {
@@ -448,7 +468,7 @@ class RoundContextSpec extends WordSpec with Matchers {
         rounda.endTurn // 2. Attacker
         rounda.endTurn // 1. Attacker
 
-        rounda.state shouldBe a[RoundFinished]
+        rounda.state shouldBe a[RoundFinishedDefenderWon]
       }
 
       "set correct player statuses for the next round after the round is finished" in {
@@ -479,7 +499,7 @@ class RoundContextSpec extends WordSpec with Matchers {
         rounda.endTurn //1. Attacker
 
         rounda.endTurn //Defender
-        rounda.state shouldBe a[RoundFinished]
+        rounda.state shouldBe a[RoundFinishedDefenderLost]
       }
 
       "don't let any player put down a card when in RoundFinished state" in {

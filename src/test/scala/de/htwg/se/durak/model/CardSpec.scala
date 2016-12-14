@@ -23,7 +23,7 @@ class CardSpec extends WordSpec with Matchers {
 
     "be compareable to other cards" in {
       card should be > Card(Suit.Spades, Rank.King)
-      card should be > Card(Suit.Hearts, Rank.Ace)
+      card should be >= Card(Suit.Hearts, Rank.Ace)
       card should be < Card(Suit.Hearts, Rank.Two, true)
     }
   }

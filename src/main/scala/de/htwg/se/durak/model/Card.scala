@@ -6,11 +6,11 @@ case class Card(suit: Suit, rank: Rank, isTrump: Boolean = false) extends Ordere
   }
 
   override def compare(that: Card) = {
-    if (this.suit == that.suit) this.rank.pointValue - that.rank.pointValue
+    if (isSameSuit(that)) this.rank.pointValue - that.rank.pointValue
     else {
       if (this.isTrump && !that.isTrump) 1
       else if (!this.isTrump && that.isTrump) -1
-      else 1
+      else 0
     }
   }
 

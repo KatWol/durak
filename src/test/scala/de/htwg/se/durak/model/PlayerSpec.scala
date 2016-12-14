@@ -17,10 +17,7 @@ class PlayerSpec extends WordSpec with Matchers {
     }
 
     "put down a card" in {
-      player2.putDownCard(Card(Suit.Diamonds, Rank.Nine)) should be(Tuple2[Card, Player](Card(Suit.Diamonds, Rank.Nine), Player("Erika", 2, List[Card](Card(Suit.Spades, Rank.Queen)))))
-      a[IllegalArgumentException] should be thrownBy {
-        player2.putDownCard(Card(Suit.Clubs, Rank.Queen))
-      }
+      player2.putDownCard(Card(Suit.Diamonds, Rank.Nine)) should be(Player("Erika", 2, List[Card](Card(Suit.Spades, Rank.Queen))))
       the[IllegalArgumentException] thrownBy {
         player1.putDownCard(Card(Suit.Clubs, Rank.Queen))
       } should have message ("Player does not have this card in his/her hand")

@@ -1,8 +1,9 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.round
 
 import de.htwg.se.durak.model._
+import de.htwg.se.durak.controller.RoundContext
 
-class DefendersTurn extends RoundState {
+class DefendersTurn extends RoundNotFinished {
   override def playCard(round: RoundContext, card: Card, attack: Attack) {
     if (!round.attacks.contains(attack)) throw new IllegalArgumentException("This attack does not exist")
 
@@ -15,17 +16,12 @@ class DefendersTurn extends RoundState {
       updateTurn(round)
       if (round.players.size > 2) changeState(round, new SecondAttackersTurn)
       else changeState(round, new FirstAttackersTurn)
-    } else changeState(round, new RoundFinished)
+    } else if (!round.allAttacksDefended) changeState(round, new RoundFinishedDefenderLost)
+    else changeState(round, new RoundFinishedDefenderWon)
   }
 
-  def putDownCard(round: RoundContext, card: Card, attack: Attack) = {
-    round.updatePlayer(round.getCurrentPlayer, round.getCurrentPlayer.putDownCard(card)._2)
+  override def putDownCard(round: RoundContext, card: Card, attack: Attack) = {
+    super.putDownCard(round, card, attack)
     round.attacks = round.attacks.updated(round.attacks.indexOf(attack), attack.defend(card))
-  }
-
-  def updateTurn(round: RoundContext) = {
-    val nextCurrentPlayer = round.getNextCurrentPlayer
-    round.updatePlayer(round.getCurrentPlayer, round.getCurrentPlayer.changeTurn)
-    round.updatePlayer(nextCurrentPlayer, nextCurrentPlayer.changeTurn)
   }
 }

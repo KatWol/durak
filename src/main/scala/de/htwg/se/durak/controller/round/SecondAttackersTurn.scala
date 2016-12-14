@@ -1,4 +1,6 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.round
+
+import de.htwg.se.durak.controller.RoundContext
 
 class SecondAttackersTurn extends AttackersTurn {
   override def missTurn(round: RoundContext) = {

@@ -1,18 +1,9 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.round
 
 import de.htwg.se.durak.model._
+import de.htwg.se.durak.controller.RoundContext
 
-class RoundFinished extends RoundState {
-  override def setupForNextRound(round: RoundContext) = {
-    //Karten an die Spieler verteilen
-    dealCards(round)
-
-    //Setzt die Startaufstellung
-    val defenderNumber = round.players(round.getIndexOfPlayer(round.getDefender)).number
-    if (hasDefenderWon(round)) updatePlayerStatuses(round, defenderNumber)
-    else updatePlayerStatuses(round, defenderNumber + 1)
-  }
-
+abstract class RoundFinished extends RoundState {
   //Die Methode kann mit der Methode aus dem GameRound-Controller zusammengefasst werden
   //Gibt eine Liste mit der Startaufstellung für die nächste Runde zurück
   def updatePlayerStatuses(round: RoundContext, nextStartPlayer: Int) = {
@@ -25,20 +16,7 @@ class RoundFinished extends RoundState {
   }
 
   def dealCards(round: RoundContext) = {
-
     round.drawNCards(round.getFirstAttacker, Math.max(6 - round.getFirstAttacker.numberOfCards, 0))
     if (round.getSecondAttacker != null) round.drawNCards(round.getSecondAttacker, Math.max(6 - round.getSecondAttacker.numberOfCards, 0))
-
-    if (hasDefenderWon(round)) round.drawNCards(round.getDefender, Math.max(6 - round.getDefender.numberOfCards, 0))
-    else pickUpAllCardsOnTable(round)
-  }
-
-  def hasDefenderWon(round: RoundContext) = round.allAttacksDefended
-
-  //Defender gets all cards on the table
-  def pickUpAllCardsOnTable(round: RoundContext) {
-    val cards = for (attack <- round.attacks; cards <- attack.getCards) yield cards
-    val defender = round.getDefender.takeCards(cards)
-    round.updatePlayer(round.getDefender, defender)
   }
 }
