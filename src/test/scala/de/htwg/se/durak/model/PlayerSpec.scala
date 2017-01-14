@@ -66,5 +66,12 @@ class PlayerSpec extends WordSpec with Matchers {
     "return his smallest trump card" in {
       player.getSmallestTrumpCard should be(Card(Suit.Clubs, Rank.Three, true))
     }
+
+    "set the turn correct" in {
+      player = player.setTurn(true)
+      player.hisTurn should be(true)
+      player = player.setTurn(false)
+      player.hisTurn should be(false)
+    }
   }
 }

@@ -16,5 +16,6 @@ case class Attack(attackingCard: Card, defendingCard: Card = null) {
 
   //Gibt eine Liste aller Karten in dem Attack zurück
   def getCards: List[Card] = List[Card](attackingCard, defendingCard).filter(card => card != null)
+  override def toString: String = "[attackingCard: " + attackingCard + ", defendingCard: " + defendingCard + ", isCompleted: " + isCompleted + "]"
 
 }

@@ -16,5 +16,17 @@ case class Player(name: String, number: Int, cards: List[Card], status: PlayerSt
   def hasCard(card: Card): Boolean = cards.contains(card)
   override def toString: String = "Player [name: " + name + ", number: " + number + ", cards: " + cards + ", status: " + status + ", hisTurn: " + hisTurn + "]"
   def setTrumpSuit(trumpSuit: Suit): Player = this.copy(cards = (for (card <- cards) yield { card.copy(isTrump = card.suit == trumpSuit) }))
-  def getSmallestTrumpCard = (for (card <- cards if card.isTrump) yield card).min
+  def getSmallestTrumpCard = {
+    val trumpCards = for (card <- cards if card.isTrump) yield card
+    if (trumpCards.size != 0) trumpCards.min
+    else null
+  }
+  
+  def printCards = {
+    var string = ""
+    for(card <- cards) {
+      string = string + "\n" + card
+    }
+    string
+  }
 }

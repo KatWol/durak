@@ -5,7 +5,6 @@ import scala.util.Random
 case class Deck(cards: List[Card]) {
   def this(startWith: Rank) = {
     this(Deck.getInitialCards(startWith))
-    this.shuffle
   }
 
   def isEmpty: Boolean = numberOfCards == 0
@@ -36,6 +35,7 @@ case class Deck(cards: List[Card]) {
 
 object Deck {
   def getInitialCards(startWith: Rank): List[Card] = {
-    for (suit <- Suit.values; rank <- Rank.values if rank >= startWith) yield Card(suit, rank, false)
+    val cards = for (suit <- Suit.values; rank <- Rank.values if rank >= startWith) yield Card(suit, rank, false)
+    Random.shuffle(cards)
   }
 }
