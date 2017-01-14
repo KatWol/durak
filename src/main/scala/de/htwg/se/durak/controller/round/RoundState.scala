@@ -1,12 +1,11 @@
 package de.htwg.se.durak.controller.round
 
 import de.htwg.se.durak.model._
-import de.htwg.se.durak.controller.RoundContext
+import de.htwg.se.durak.controller.Round
 
-abstract class RoundState {
-  def playCard(round: RoundContext, card: Card, attack: Attack) = {}
-  def endTurn(round: RoundContext) = {}
-  def setupForNextRound(round: RoundContext) = {}
+trait RoundState {
+  def playCard(round: Round, card: Card, attack: Attack) 
+  def endTurn(round: Round)
 
-  def changeState(round: RoundContext, state: RoundState) = round.changeState(state)
+  def changeState(round: Round, state: RoundState) = round.changeState(state)
 }

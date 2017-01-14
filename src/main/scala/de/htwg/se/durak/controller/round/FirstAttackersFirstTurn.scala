@@ -2,10 +2,10 @@ package de.htwg.se.durak.controller.round
 
 import de.htwg.se.durak.model.Attack
 import de.htwg.se.durak.model.Card
-import de.htwg.se.durak.controller.RoundContext
+import de.htwg.se.durak.controller.Round
 
 class FirstAttackersFirstTurn extends FirstAttackersTurn {
-  override def playCard(round: RoundContext, card: Card, attack: Attack) = {
+  override def playCard(round: Round, card: Card, attack: Attack) = {
     playedCard = true
 
     //Es wird überprüft, ob es sich um eine valide Karte handelt
@@ -16,7 +16,7 @@ class FirstAttackersFirstTurn extends FirstAttackersTurn {
     else putDownCard(round, card)
   }
 
-  override def endTurn(round: RoundContext) = {
+  override def endTurn(round: Round) = {
     if (!playedCard) throw new IllegalArgumentException("Must play a card at the beginning of a round")
     else updateTurn(round)
   }

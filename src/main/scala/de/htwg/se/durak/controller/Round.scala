@@ -6,16 +6,16 @@ import de.htwg.se.durak.controller.round.RoundState
 
 //State ändern sich in der folgenden Reihenfolge:
 //FirstAttackersFirstTurn -> DefendersTurn -> SecondAttackersTurn -> FirstAttackersTurn -> DefendersTurn ... -> RoundFinished (und hier je nachdem RoundFinishedDefenderWon oder RoundFinishedDefenderLost)
-class RoundContext(var deck: Deck, var players: List[Player]) {
+class Round(var deck: Deck, var players: List[Player]) {
   private[controller] var state: RoundState = new FirstAttackersFirstTurn
   var attacks = List[Attack]()
   var turnMissed = false
+  var defenderWon = false
 
   //**************Methoden, die von den State-Objekten ausgeführt werden********************
 
   def playCard(card: Card, attack: Attack = null) = this.state.playCard(this, card, attack)
   def endTurn = this.state.endTurn(this)
-  def setupForNextRound = this.state.setupForNextRound(this)
 
   def changeState(state: RoundState) = this.state = state
 

@@ -1,12 +1,12 @@
 package de.htwg.se.durak.controller.round
 
 import de.htwg.se.durak.model._
-import de.htwg.se.durak.controller.RoundContext
+import de.htwg.se.durak.controller.Round
 
 abstract class AttackersTurn extends RoundNotFinished {
   var playedCard = false
 
-  override def playCard(round: RoundContext, card: Card, attack: Attack) = {
+  override def playCard(round: Round, card: Card, attack: Attack) = {
     playedCard = true
 
     //Es wird überprüft, ob es sich um eine valide Karte handelt
@@ -18,7 +18,7 @@ abstract class AttackersTurn extends RoundNotFinished {
 
   }
 
-  override def endTurn(round: RoundContext) = {
+  override def endTurn(round: Round) = {
     if (!playedCard) missTurn(round)
     else {
       round.turnMissed = false
@@ -26,12 +26,12 @@ abstract class AttackersTurn extends RoundNotFinished {
     }
   }
 
-  def missTurn(round: RoundContext)
+  def missTurn(round: Round)
 
   //Es wird überprüft, ob der gegebene Kartenwert bereits auf dem Tisch liegt
-  def isRankOnTable(round: RoundContext, rank: Rank): Boolean = round.getCardsOnTable.exists(card => card.rank == rank)
+  def isRankOnTable(round: Round, rank: Rank): Boolean = round.getCardsOnTable.exists(card => card.rank == rank)
 
-  override def putDownCard(round: RoundContext, card: Card, attack: Attack) = {
+  override def putDownCard(round: Round, card: Card, attack: Attack) = {
     super.putDownCard(round, card)
     round.attacks = Attack(card) :: round.attacks
   }

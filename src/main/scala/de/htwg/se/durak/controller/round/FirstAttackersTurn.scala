@@ -1,16 +1,22 @@
 package de.htwg.se.durak.controller.round
 
-import de.htwg.se.durak.controller.RoundContext
+import de.htwg.se.durak.controller.Round
 
 class FirstAttackersTurn extends AttackersTurn {
-  override def missTurn(round: RoundContext) = {
+  override def missTurn(round: Round) = {
     if (round.players.size > 2) {
-      if (round.turnMissed) changeState(round, new RoundFinishedDefenderWon)
+      if (round.turnMissed) {
+        round.defenderWon = true
+        changeState(round, new RoundFinished)
+      }
       else updateTurn(round)
-    } else changeState(round, new RoundFinishedDefenderWon)
+    } else {
+      round.defenderWon = true
+      changeState(round, new RoundFinished)
+    }
   }
 
-  override def updateTurn(round: RoundContext) = {
+  override def updateTurn(round: Round) = {
     super.updateTurn(round)
     changeState(round, new DefendersTurn)
   }

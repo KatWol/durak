@@ -39,12 +39,12 @@ class RoundContextSpec extends WordSpec with Matchers {
 
   var player1 = Player("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6), PlayerStatus.Attacker, true)
   var player2 = Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
-  var round = new RoundContext(Deck(cards), List[Player](player1, player2))
+  var round = new Round(Deck(cards), List[Player](player1, player2))
 
   def resetRound() = {
     player1 = Player("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6), PlayerStatus.Attacker, true)
     player2 = Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
-    round = new RoundContext(Deck(cards), List[Player](player1, player2))
+    round = new Round(Deck(cards), List[Player](player1, player2))
   }
 
   "A Round with 2 players" when {
@@ -295,7 +295,7 @@ class RoundContextSpec extends WordSpec with Matchers {
   var player3a = Player("David", 2, List(card13a, card14a, card15a, card16a, card17a, card18a), PlayerStatus.Attacker, false)
   var player4a = Player("Thomas", 3, List(card19a, card20a, card21a, card22a, card23a, card24a))
 
-  var rounda = new RoundContext(Deck(cards), List(player1a, player2a, player3a, player4a))
+  var rounda = new Round(Deck(cards), List(player1a, player2a, player3a, player4a))
 
   "A Round with 4 Players" should {
     "when no player misses a turn that ends the round" should {
@@ -414,7 +414,7 @@ class RoundContextSpec extends WordSpec with Matchers {
 
         rounda.state shouldBe a[DefendersTurn]
 
-        val newRound = new RoundContext(new Deck(Rank.Seven), List[Player](
+        val newRound = new Round(new Deck(Rank.Seven), List[Player](
           Player("Kathrin", 0, List[Card](Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven)), PlayerStatus.Attacker, true),
           Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
         ))
@@ -460,7 +460,7 @@ class RoundContextSpec extends WordSpec with Matchers {
 
     "both attackers miss a turn in the same round" should {
       "end if both attackers miss a turn in the same round" in {
-        rounda = new RoundContext(new Deck(cards), List(player1a, player2a, player3a, player4a))
+        rounda = new Round(new Deck(cards), List(player1a, player2a, player3a, player4a))
         rounda.playCard(card1a) //1. Attacker
         rounda.endTurn //1. Attacker
         rounda.playCard(card7a, Attack(card1a)) //Defender
@@ -494,7 +494,7 @@ class RoundContextSpec extends WordSpec with Matchers {
 
     "the defender misses a turn" should {
       "end when the defender misses a turn" in {
-        rounda = new RoundContext(new Deck(cards), List(player1a, player2a, player3a, player4a))
+        rounda = new Round(new Deck(cards), List(player1a, player2a, player3a, player4a))
         rounda.playCard(card1a) //1. Attacker
         rounda.endTurn //1. Attacker
 
