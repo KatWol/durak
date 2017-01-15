@@ -30,11 +30,10 @@ class DefendersTurn extends RoundNotFinished {
 
   override def putDownCard(round: Round, card: Card, attack: Attack) = {
     try {
-      if(round.getCurrentPlayer.cards.contains(card)) {
+      if (round.getCurrentPlayer.cards.contains(card)) {
         round.attacks = round.attacks.updated(round.attacks.indexOf(attack), attack.defend(card))
         super.putDownCard(round, card, attack)
-      }
-      else round.statusLine = "Player does not have this card in his/her hand"
+      } else round.statusLine = "Player does not have this card in his/her hand"
     } catch {
       case e: IllegalArgumentException => round.statusLine = e.getMessage
     }
