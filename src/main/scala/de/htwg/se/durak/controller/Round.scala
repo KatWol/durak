@@ -72,7 +72,12 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
   //Überprüft, ob alle Attacks auf dem Tisch verteidigt wurden
   def allAttacksDefended(): Boolean = !attacks.exists(attack => !(attack.isCompleted))
 
-  def maxNumberOfAttacksReached(): Boolean = attacks.size >= 6
+  //Max erreicht wenn 6 Attacks gestartet wurden, oder wenn der Defender keine Karten mehr hat
+  def maxNumberOfAttacksReached(): Boolean = {
+    attacks.size >= 6 || getDefender.cards.size <= this.getNumberOfUndefendedAttacks
+  }
+  
+  def getNumberOfUndefendedAttacks: Int = attacks.filter(a => !a.isCompleted).size
 
   //Zieht Karten vom Deck und fügt diese dem Spieler hinzu
   def drawNCards(player: Player, numberOfCards: Int) = {

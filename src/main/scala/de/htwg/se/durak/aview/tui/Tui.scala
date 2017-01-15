@@ -14,8 +14,11 @@ class Tui(var controller: GameRound) extends Observer {
     println(controller.round.statusLine)
     println("Current players name: " + controller.round.getCurrentPlayer.name)
     println("Current players status: " + controller.round.getCurrentPlayer.status)
+    println
     println("Current players cards: " + controller.round.getCurrentPlayer.printCards)
+    println
     println("Current attacks on the table: " + controller.round.getAttacksOnTableString)
+    println
     println("Please enter a command: ")
     println("suit,rank - Play a card to start an attack")
     println("suit,rank,numberOfAttack - Play a card to defend an attack")

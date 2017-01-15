@@ -36,6 +36,12 @@ class GameFinished extends GameState {
     (players, temp._2)
   }
 
-  def getNextStartPlayer(game: GameRound): Int = game.activePlayers(0).number
+  def getNextStartPlayer(game: GameRound): Int = {
+    val nextStartPlayer = getNextDefender(game) - 1
+    if (nextStartPlayer >= 0) nextStartPlayer
+    else nextStartPlayer + game.allPlayers.size
+  }
+  
+  def getNextDefender(game: GameRound): Int = game.activePlayers(0).number
 
 }

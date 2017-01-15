@@ -10,12 +10,21 @@ abstract class AttackersTurn extends RoundNotFinished {
     playedCard = true
 
     //Es wird überprüft, ob es sich um eine valide Karte handelt
-    if (!isRankOnTable(round, card.rank)) round.statusLine = "The rank of this card is not on the table yet"
+    if (!isRankOnTable(round, card.rank)) {
+      round.statusLine = "The rank of this card is not on the table yet"
+      round.notifyObservers
+    }
     //Status wird geändert, wenn die maximale Anzahl an Attacks erreicht wurde
-    else if (round.maxNumberOfAttacksReached) endTurn(round)
+    else if (round.maxNumberOfAttacksReached) {
+      round.statusLine = "The maximum number of attacks is reached and the turn is finished. It is " + round.getNextCurrentPlayer() + "'s turn"
+      endTurn(round)
+    }
     //Spieler legt Karte ab, ein neuer Attack der Runde hinzugefügt und der Spieler aktualisiert (da sich seine Karten auf der Hand verändert haben)
-    else putDownCard(round, card)
-    round.notifyObservers
+    else {
+      putDownCard(round, card)
+      round.notifyObservers
+    }
+    
 
   }
 
