@@ -41,7 +41,7 @@ class GameFinished extends GameState {
     if (nextStartPlayer >= 0) nextStartPlayer
     else nextStartPlayer + game.allPlayers.size
   }
-  
+
   def getNextDefender(game: GameRound): Int = game.activePlayers(0).number
 
 }

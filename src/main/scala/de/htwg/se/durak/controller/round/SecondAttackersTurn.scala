@@ -6,7 +6,7 @@ class SecondAttackersTurn extends AttackersTurn {
   override def missTurn(round: Round) = {
     round.turnMissed = true
     updateTurn(round)
-    changeState(round, new FirstAttackersTurn) 
+    changeState(round, new FirstAttackersTurn)
   }
 
   override def updateTurn(round: Round) = {

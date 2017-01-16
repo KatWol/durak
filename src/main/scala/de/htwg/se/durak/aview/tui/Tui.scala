@@ -4,16 +4,17 @@ import de.htwg.se.durak.controller.GameRound
 import de.htwg.se.util.Observer
 
 class Tui(var controller: GameRound) extends Observer {
-  controller.add(this);
-  controller.round.add(this);
+  controller.add(this)
+  controller.round.add(this)
 
   override def update = printTui
-  
+
   def printTui = {
     println(controller.getStatusLine)
     println(controller.round.statusLine)
     println("Current players name: " + controller.round.getCurrentPlayer.name)
     println("Current players status: " + controller.round.getCurrentPlayer.status)
+    println("Number of cards in deck: " + controller.round.deck.numberOfCards)
     println
     println("Current players cards: " + controller.round.getCurrentPlayer.printCards)
     println

@@ -45,8 +45,7 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
       }
     }
   }
-  
-  
+
   def getIndexOfPlayer(player: Player): Int = players.indexOf(player)
 
   //Gibt den Spieler zurück, der an der Reihe ist
@@ -76,7 +75,7 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
   def maxNumberOfAttacksReached(): Boolean = {
     attacks.size >= 6 || getDefender.cards.size <= this.getNumberOfUndefendedAttacks
   }
-  
+
   def getNumberOfUndefendedAttacks: Int = attacks.filter(a => !a.isCompleted).size
 
   //Zieht Karten vom Deck und fügt diese dem Spieler hinzu

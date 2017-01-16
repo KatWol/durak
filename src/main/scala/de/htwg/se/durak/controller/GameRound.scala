@@ -27,7 +27,6 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
   var state: GameState = new GameNotFinished
   //7. Runde wird gestartet 
   var round = new Round(this.deck, this.activePlayers, this.trumpSuit, subscribers)
-  
 
   //*********** ENDE KONSTRUKTOR ***********
 

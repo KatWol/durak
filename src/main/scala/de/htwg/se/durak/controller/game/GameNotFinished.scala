@@ -51,7 +51,7 @@ class GameNotFinished extends GameState {
     if (game.deck.isEmpty && game.activePlayers.size < 2) true
     else false
   }
-  
+
   //Macht nur Sinn, wenn die GameRound beendet wurde
   def getDurak(game: GameRound): String = game.activePlayers(0).name
 

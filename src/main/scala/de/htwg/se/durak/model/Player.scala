@@ -21,10 +21,10 @@ case class Player(name: String, number: Int, cards: List[Card], status: PlayerSt
     if (trumpCards.size != 0) trumpCards.min
     else null
   }
-  
+
   def printCards = {
     var string = ""
-    for(card <- cards) {
+    for (card <- cards) {
       string = string + "\n" + card
     }
     string
