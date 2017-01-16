@@ -1,7 +1,7 @@
 package de.htwg.se.durak
 
 import de.htwg.se.durak.aview.tui.Tui
-import de.htwg.se.durak.controller.GameRound
+import de.htwg.se.durak.controller.impl.GameRound
 
 import scala.io.StdIn._
 import de.htwg.se.durak.aview.gui.SwingGui

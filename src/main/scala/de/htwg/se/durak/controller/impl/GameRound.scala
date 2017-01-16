@@ -1,10 +1,16 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.impl
 
-import de.htwg.se.durak.model._
-import de.htwg.se.durak.controller.game._
-import de.htwg.se.util.Observable
+import de.htwg.se.durak.controller.GameRoundController
+import de.htwg.se.durak.controller.impl.game.GameNotFinished
+import de.htwg.se.durak.controller.impl.game.GameState
+import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.Deck
+import de.htwg.se.durak.model.Player
+import de.htwg.se.durak.model.PlayerStatus
+import de.htwg.se.durak.model.Rank
+import de.htwg.se.util.Observer
 
-class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends Observable {
+class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends GameRoundController {
   val startRank = startWithRank //Um auf den Wert in GameFinished zugreifen zu können
   //*********** BEGINN KONSTRUKTOR ***********
 
@@ -35,8 +41,31 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
   //*********** Methoden die auf den StateObjekten aufgerufen werden *********
 
   //Führt alle notwendigen Aktionen des aktuellen Status aus und gibt dann einen boolschen Wert zurück, ob etwas geändert wurde
-  def updateState = state.updateState(this)
+  override def updateGameRound = state.updateState(this)
 
+  //*********** Implementierung des Traits
+  override def playCard(suit: String, rank: String, attack: String) = round.playCard(suit, rank, attack)
+  override def endTurn = round.endTurn
+  override def addSubscriberToRound(s: Observer) = round.add(s)
+
+  //**** Methoden um den aktuellen Stand in der View anzuzeigen *****
+
+  //Setzt den Status zu einem leeren String nachdem er zurück gegeben wurde
+  override def getGameStatus = {
+    val tempStatus = statusLine
+    statusLine = ""
+    tempStatus
+  }
+  override def getRoundStatus = round.statusLine
+  override def getCurrentPlayerName = round.getCurrentPlayer.name
+  override def getCurrentPlayerStatus = round.getCurrentPlayer.status.toString
+  override def getNumberOfCardsInDeck = round.deck.numberOfCards.toString
+  override def getCurrentPlayersCardsString = round.getCurrentPlayer.printCards
+  override def getCurrentPlayersCards = round.getCurrentPlayer.cards
+  override def getAttacksOnTableString = round.getAttacksOnTableString
+  override def getAttacksOnTable = round.attacks
+
+  //*********** Sonstige Methoden ***********************
   def changeState(state: GameState) = this.state = state;
 
   def getDeck(startWithRank: Rank): Deck = new Deck(startWithRank)
@@ -74,13 +103,6 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
       else if (i == (index + 2) % activePlayers.size) activePlayers(i).copy(status = PlayerStatus.Attacker, hisTurn = false) //Zweiter Angreifer
       else activePlayers(i).copy(status = PlayerStatus.Inactive, hisTurn = false)
     }).toList
-  }
-
-  //Setzt den Status zu einem leeren String nachdem er zurück gegeben wurde
-  def getStatusLine = {
-    val tempStatus = statusLine
-    statusLine = ""
-    tempStatus
   }
 
 }

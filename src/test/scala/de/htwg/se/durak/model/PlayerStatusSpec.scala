@@ -8,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
 class PlayerStatusSpec extends WordSpec with Matchers {
   "A PlayerStatus" should {
     "only have allowed values" in {
-      val allowedPlayerStatuses = Array("attacker", "defender", "inactive")
+      val allowedPlayerStatuses = Array("Attacker", "Defender", "Inactive")
       PlayerStatus.values.foreach { e => allowedPlayerStatuses.contains(e.toString) should be(true) }
 
       val notAllowedPlayerStatuses = Array("player")
@@ -16,8 +16,8 @@ class PlayerStatusSpec extends WordSpec with Matchers {
     }
 
     "have a string representation" in {
-      PlayerStatus.Attacker.toString should be("attacker")
-      PlayerStatus.Defender.toString should be("defender")
+      PlayerStatus.Attacker.toString should be("Attacker")
+      PlayerStatus.Defender.toString should be("Defender")
     }
   }
 }

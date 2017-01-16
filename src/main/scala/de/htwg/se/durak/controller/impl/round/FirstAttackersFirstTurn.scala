@@ -1,8 +1,8 @@
-package de.htwg.se.durak.controller.round
+package de.htwg.se.durak.controller.impl.round
 
 import de.htwg.se.durak.model.Attack
 import de.htwg.se.durak.model.Card
-import de.htwg.se.durak.controller.Round
+import de.htwg.se.durak.controller.impl.Round
 
 class FirstAttackersFirstTurn extends FirstAttackersTurn {
   override def playCard(round: Round, card: Card, attack: Attack) = {

@@ -1,7 +1,7 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.impl
 
-import de.htwg.se.durak.controller.round.FirstAttackersFirstTurn
-import de.htwg.se.durak.controller.round.RoundState
+import de.htwg.se.durak.controller.impl.round.FirstAttackersFirstTurn
+import de.htwg.se.durak.controller.impl.round.RoundState
 import de.htwg.se.durak.model._
 import de.htwg.se.util.Observable
 import de.htwg.se.util.Observer

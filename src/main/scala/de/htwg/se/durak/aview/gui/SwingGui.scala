@@ -2,12 +2,13 @@ package de.htwg.se.durak.aview.gui
 
 import scala.swing._
 
-import de.htwg.se.durak.controller.GameRound
+import de.htwg.se.durak.controller.impl.GameRound
 import de.htwg.se.util.Observer
+import de.htwg.se.durak.controller.GameRoundController
 
-class SwingGui(var controller: GameRound) extends Frame with Observer {
+class SwingGui(var controller: GameRoundController) extends Frame with Observer {
   controller.add(this)
-  controller.round.add(this)
+  controller.addSubscriberToRound(this)
 
   title = "Durak"
 
@@ -17,25 +18,25 @@ class SwingGui(var controller: GameRound) extends Frame with Observer {
       text = "Status:"
       horizontalAlignment = Alignment.Left
     }
-    contents += new TextField(controller.round.statusLine, 45)
+    contents += new TextField(controller.getRoundStatus, 45)
 
     contents += new Label {
       text = "Player name:"
       horizontalAlignment = Alignment.Left
     }
-    contents += new TextField(controller.round.getCurrentPlayer.name, 15)
+    contents += new TextField(controller.getCurrentPlayerName, 15)
 
     contents += new Label {
       text = "Status:"
       horizontalAlignment = Alignment.Left
     }
-    contents += new TextField(controller.round.getCurrentPlayer.status.toString, 15)
+    contents += new TextField(controller.getCurrentPlayerStatus, 15)
 
     contents += new Label {
       text = "Number of cards in deck:"
       horizontalAlignment = Alignment.Left
     }
-    contents += new TextField(controller.round.deck.numberOfCards.toString, 15)
+    contents += new TextField(controller.getNumberOfCardsInDeck, 15)
   }
 
   contents = statusPanel

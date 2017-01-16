@@ -1,6 +1,6 @@
-package de.htwg.se.durak.controller.round
+package de.htwg.se.durak.controller.impl.round
 
-import de.htwg.se.durak.controller.Round
+import de.htwg.se.durak.controller.impl.Round
 import de.htwg.se.durak.model._
 
 abstract class AttackersTurn extends RoundNotFinished {

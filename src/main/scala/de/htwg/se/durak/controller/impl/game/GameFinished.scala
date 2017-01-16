@@ -1,11 +1,11 @@
-package de.htwg.se.durak.controller.game
+package de.htwg.se.durak.controller.impl.game
 
-import de.htwg.se.durak.controller.GameRound
+import de.htwg.se.durak.controller.impl.GameRound
 import de.htwg.se.durak.model.Card
 import de.htwg.se.durak.model.Deck
 import de.htwg.se.durak.model.Player
 import de.htwg.se.durak.model.PlayerStatus
-import de.htwg.se.durak.controller.Round
+import de.htwg.se.durak.controller.impl.Round
 
 class GameFinished extends GameState {
   override def updateState(game: GameRound) = {

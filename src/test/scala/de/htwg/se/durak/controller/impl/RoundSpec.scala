@@ -1,10 +1,10 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.impl
 
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
 import de.htwg.se.durak.model._
-import de.htwg.se.durak.controller.round._
+import de.htwg.se.durak.controller.impl.round._
 import de.htwg.se.util.Observer
 
 class RoundSpec extends WordSpec with Matchers {

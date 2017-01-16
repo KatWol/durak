@@ -1,13 +1,13 @@
-package de.htwg.se.durak.controller
+package de.htwg.se.durak.controller.impl
 
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
-import de.htwg.se.durak.controller.game.GameNotFinished
-import de.htwg.se.durak.model.Rank
-import de.htwg.se.durak.model.PlayerStatus
-import de.htwg.se.durak.model.Deck
+import de.htwg.se.durak.controller.impl.game.GameNotFinished
 import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.Deck
+import de.htwg.se.durak.model.PlayerStatus
+import de.htwg.se.durak.model.Rank
 
 class GameRoundSpec extends WordSpec with Matchers {
   def getInactivePlayer(game: GameRound) = game.round.players.filter(_.status == PlayerStatus.Inactive).head
@@ -52,7 +52,7 @@ class GameRoundSpec extends WordSpec with Matchers {
     }
 
     "set correct values after finishing a round" in {
-      game.updateState
+      game.updateGameRound
       game.round.getFirstAttacker.name should be(secondAttackerName)
       game.round.getSecondAttacker.name should be(firstAttackerName)
       game.round.getDefender.name should be(inactiveName)

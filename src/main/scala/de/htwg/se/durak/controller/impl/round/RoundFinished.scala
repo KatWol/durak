@@ -1,7 +1,7 @@
-package de.htwg.se.durak.controller.round
+package de.htwg.se.durak.controller.impl.round
 
 import de.htwg.se.durak.model._
-import de.htwg.se.durak.controller.Round
+import de.htwg.se.durak.controller.impl.Round
 
 class RoundFinished extends RoundState {
   override def playCard(round: Round, card: Card, attack: Attack) = {

@@ -1,9 +1,9 @@
-package de.htwg.se.durak.controller.game
+package de.htwg.se.durak.controller.impl.game
 
-import de.htwg.se.durak.controller.GameRound
-import de.htwg.se.durak.controller.round.RoundFinished
-import de.htwg.se.durak.controller.round.RoundNotFinished
-import de.htwg.se.durak.controller.Round
+import de.htwg.se.durak.controller.impl.GameRound
+import de.htwg.se.durak.controller.impl.Round
+import de.htwg.se.durak.controller.impl.round.RoundFinished
+import de.htwg.se.durak.controller.impl.round.RoundNotFinished
 
 class GameNotFinished extends GameState {
   override def updateState(game: GameRound) = {

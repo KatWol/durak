@@ -6,9 +6,9 @@ sealed trait PlayerStatus {
 }
 
 object PlayerStatus {
-  case object Attacker extends PlayerStatus { val value = "attacker" }
-  case object Defender extends PlayerStatus { val value = "defender" }
-  case object Inactive extends PlayerStatus { val value = "inactive" }
+  case object Attacker extends PlayerStatus { val value = "Attacker" }
+  case object Defender extends PlayerStatus { val value = "Defender" }
+  case object Inactive extends PlayerStatus { val value = "Inactive" }
 
   val values = List(Attacker, Defender, Inactive)
 }
