@@ -2,6 +2,7 @@ package de.htwg.se.durak.controller.impl.round
 
 import de.htwg.se.durak.controller.impl.Round
 import de.htwg.se.durak.model._
+import de.htwg.se.durak.controller.impl.PutDownCardCommand
 
 abstract class AttackersTurn extends RoundNotFinished {
   var playedCard = false
@@ -19,7 +20,11 @@ abstract class AttackersTurn extends RoundNotFinished {
       endTurn(round)
     } //Spieler legt Karte ab, ein neuer Attack der Runde hinzugefügt und der Spieler aktualisiert (da sich seine Karten auf der Hand verändert haben)
     else {
-      putDownCard(round, card)
+      try {
+        round.commandManager.executeCommand(new PutDownCardCommand(round, card, attack))
+      } catch {
+        case e: IllegalArgumentException => round.statusLine = e.getMessage
+      }
       round.notifyObservers
     }
 
@@ -31,6 +36,7 @@ abstract class AttackersTurn extends RoundNotFinished {
       round.turnMissed = false
       updateTurn(round)
     }
+    round.commandManager = round.commandManager.reset
     round.notifyObservers
   }
 
@@ -39,7 +45,7 @@ abstract class AttackersTurn extends RoundNotFinished {
   //Es wird überprüft, ob der gegebene Kartenwert bereits auf dem Tisch liegt
   def isRankOnTable(round: Round, rank: Rank): Boolean = round.getCardsOnTable.exists(card => card.rank == rank)
 
-  override def putDownCard(round: Round, card: Card, attack: Attack) = {
+  /*override def putDownCard(round: Round, card: Card, attack: Attack) = {
     try {
       super.putDownCard(round, card)
       round.attacks = Attack(card) :: round.attacks
@@ -47,5 +53,5 @@ abstract class AttackersTurn extends RoundNotFinished {
       case e: IllegalArgumentException => round.statusLine = e.getMessage
     }
 
-  }
+  }*/
 }

@@ -5,6 +5,7 @@ import de.htwg.se.durak.controller.impl.round.RoundState
 import de.htwg.se.durak.model._
 import de.htwg.se.util.Observable
 import de.htwg.se.util.Observer
+import de.htwg.se.util.CommandManager
 
 //State ändern sich in der folgenden Reihenfolge:
 //FirstAttackersFirstTurn -> DefendersTurn -> SecondAttackersTurn -> FirstAttackersTurn -> DefendersTurn ... -> RoundFinished (und hier je nachdem RoundFinishedDefenderWon oder RoundFinishedDefenderLost)
@@ -16,6 +17,7 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
 
   var statusLine = "Start of a new Round. It is " + getCurrentPlayer.name + "'s turn"
   subscribers = observers
+  var commandManager = new CommandManager
 
   //**************Methoden, die von den State-Objekten ausgeführt werden********************
 

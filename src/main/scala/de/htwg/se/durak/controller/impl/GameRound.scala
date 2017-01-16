@@ -47,6 +47,23 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
   override def playCard(suit: String, rank: String, attack: String) = round.playCard(suit, rank, attack)
   override def endTurn = round.endTurn
   override def addSubscriberToRound(s: Observer) = round.add(s)
+  override def undo = {
+    try {
+      round.commandManager.undo
+    } catch {
+      case e: IllegalStateException => statusLine = e.getMessage
+    }
+    
+    notifyObservers
+  }
+  override def redo = {
+    try {
+      round.commandManager.redo
+    } catch {
+      case e: IllegalStateException => statusLine = e.getMessage
+    }
+    notifyObservers
+  }
 
   //**** Methoden um den aktuellen Stand in der View anzuzeigen *****
 

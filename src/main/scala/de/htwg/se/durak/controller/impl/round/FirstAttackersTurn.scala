@@ -9,11 +9,13 @@ class FirstAttackersTurn extends AttackersTurn {
         round.defenderWon = true
         changeState(round, new RoundFinished)
         round.statusLine = "The round is finished and the defender won. Start a new round by entering r"
+        round.commandManager = round.commandManager.reset
       } else updateTurn(round)
     } else {
       round.defenderWon = true
       changeState(round, new RoundFinished)
       round.statusLine = "The round is finished and the defender won. Start a new round by entering r"
+      round.commandManager = round.commandManager.reset
     }
   }
 

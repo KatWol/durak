@@ -24,8 +24,10 @@ class Tui(var controller: GameRoundController) extends Observer {
     println("Please enter a command: ")
     println("suit,rank - Play a card to start an attack")
     println("suit,rank,numberOfAttack - Play a card to defend an attack")
-    println("e - EndTurn")
-    println("r - Start next round")
+    println("e - End turn")
+    println("s - Start next round")
+    println("u - Undo")
+    println("r - Redo")
     println("q - Quit game")
   }
 
@@ -34,7 +36,9 @@ class Tui(var controller: GameRoundController) extends Observer {
     input match {
       case "q" => continue = false
       case "e" => controller.endTurn
-      case "r" => controller.updateGameRound
+      case "s" => controller.updateGameRound
+      case "u" => controller.undo
+      case "r" => controller.redo
       case _ => {
         val list: List[String] = input.split(",").map(_.trim).toList
         list match {

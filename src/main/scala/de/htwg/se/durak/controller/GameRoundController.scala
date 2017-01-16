@@ -19,14 +19,27 @@ trait GameRoundController extends Observable {
    * @param rank: Rank of the card
    * @param attack: Number of the attack
    */
-  def playCard(suit: String, rank: String, attack: String)
+  def playCard(suit: String, rank: String, attack: String = "")
 
   /**
    * Ends the turn of the current player
    */
   def endTurn
 
+  /**
+   * Adds the Subscriber to the round
+   */
   def addSubscriberToRound(s: Observer)
+  
+  /**
+   * If possible, undoes the last action
+   */
+  def undo
+  
+  /**
+   * If a undo was called before, redoes that last undo
+   */
+  def redo
 
   //**** Methoden um den aktuellen Status anzuzeigen ***
   def getGameStatus: String
@@ -34,8 +47,14 @@ trait GameRoundController extends Observable {
   def getCurrentPlayerName: String
   def getCurrentPlayerStatus: String
   def getNumberOfCardsInDeck: String
+  /**
+   * Returns a formated string of the cards of the current player
+   */
   def getCurrentPlayersCardsString: String //Für Tui
   def getCurrentPlayersCards: List[Card] //Für Gui
+  /**
+   * Returns a formated string of the attacks on the table
+   */
   def getAttacksOnTableString: String //Für Tui
   def getAttacksOnTable: List[Attack] //Für Gui
 }

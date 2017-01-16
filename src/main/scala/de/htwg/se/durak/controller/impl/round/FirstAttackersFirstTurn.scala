@@ -3,6 +3,7 @@ package de.htwg.se.durak.controller.impl.round
 import de.htwg.se.durak.model.Attack
 import de.htwg.se.durak.model.Card
 import de.htwg.se.durak.controller.impl.Round
+import de.htwg.se.durak.controller.impl.PutDownCardCommand
 
 class FirstAttackersFirstTurn extends FirstAttackersTurn {
   override def playCard(round: Round, card: Card, attack: Attack) = {
@@ -14,7 +15,13 @@ class FirstAttackersFirstTurn extends FirstAttackersTurn {
     else if (round.maxNumberOfAttacksReached) {
       endTurn(round)
     } //Spieler legt Karte ab, ein neuer Attack der Runde hinzugefügt und der Spieler aktualisiert (da sich seine Karten auf der Hand verändert haben)   
-    else putDownCard(round, card)
+    else {
+      try {
+        round.commandManager.executeCommand(new PutDownCardCommand(round, card))
+      } catch {
+        case e: IllegalArgumentException => round.statusLine = e.getMessage
+      }
+    }
     round.notifyObservers
   }
 
