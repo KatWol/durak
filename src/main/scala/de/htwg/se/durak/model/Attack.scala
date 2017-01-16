@@ -18,4 +18,19 @@ case class Attack(attackingCard: Card, defendingCard: Card = null) {
   def getCards: List[Card] = List[Card](attackingCard, defendingCard).filter(card => card != null)
   override def toString: String = "[attackingCard: " + attackingCard + ", defendingCard: " + defendingCard + ", isCompleted: " + isCompleted + "]"
 
+  def toXml = {
+    if (isCompleted) <attack><attackingCard>{ attackingCard.toXml }</attackingCard><defendingCard>{ defendingCard.toXml }</defendingCard></attack>
+    else <attack><attackingCard>{ attackingCard.toXml }</attackingCard><defendingCard>null</defendingCard></attack>
+  }
+
+}
+
+object Attack {
+  def fromXml(node: scala.xml.Node) = {
+    val attackingCard = Card.fromXml((node \ "attackingCard" \ "card").head)
+    if ((node \ "defendingCard").text != "null") {
+      val defendingCard = Card.fromXml((node \ "defendingCard" \ "card").head)
+      Attack(attackingCard, defendingCard)
+    } else Attack(attackingCard, null)
+  }
 }

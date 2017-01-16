@@ -29,4 +29,24 @@ case class Player(name: String, number: Int, cards: List[Card], status: PlayerSt
     }
     string
   }
+
+  def toXml = {
+    <player><name>{ name }</name><number>{ number }</number><cards>{ cards.map(c => c.toXml) }</cards><status>{ status.toString }</status><hisTurn>{ hisTurn }</hisTurn></player>
+  }
+}
+
+object Player {
+  def fromXml(node: scala.xml.Node) = {
+    val name = (node \ "name").text
+    val number = (node \ "number").text.toInt
+    val statusString = (node \ "status").text
+    val status = PlayerStatus.parseFromString(statusString)
+    val hisTurn = (node \ "hisTurn").text.toBoolean
+    val cardNodes = (node \ "cards" \\ "card")
+    if (cardNodes.text != "") {
+      val cards = (for (card <- cardNodes) yield (Card.fromXml(card.head))).toList
+      Player(name, number, cards, status, hisTurn)
+    } else Player(name, number, List[Card](), status, hisTurn)
+
+  }
 }

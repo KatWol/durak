@@ -20,6 +20,14 @@ class CardSpec extends WordSpec with Matchers {
     "have a string presentation" in {
       card.toString should be("Card [suit: spades, rank: ace, trump: false]")
     }
+    
+    "have an Xml presentation" in {
+      card.toXml.toString should be ("<card><suit>spades</suit><rank>ace</rank><isTrump>false</isTrump></card>")
+    }
+    
+    "be parse from its Xml presentation" in {
+      Card.fromXml(<card><suit>spades</suit><rank>ace</rank><isTrump>false</isTrump></card>) should be (card)
+    }
 
     "be compareable to other cards" in {
       card should be > Card(Suit.Spades, Rank.King)

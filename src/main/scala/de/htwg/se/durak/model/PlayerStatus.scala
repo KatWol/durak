@@ -1,7 +1,7 @@
 package de.htwg.se.durak.model
 
 sealed trait PlayerStatus {
-  def value: String;
+  def value: String
   override def toString = value
 }
 
@@ -11,4 +11,11 @@ object PlayerStatus {
   case object Inactive extends PlayerStatus { val value = "Inactive" }
 
   val values = List(Attacker, Defender, Inactive)
+  def parseFromString(string: String) = {
+    string match {
+      case "attacker" | "Attacker" => PlayerStatus.Attacker
+      case "defender" | "Defender" => PlayerStatus.Defender
+      case "inactive" | "Inactive" => PlayerStatus.Inactive
+    }
+  }
 }

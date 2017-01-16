@@ -12,7 +12,6 @@ case class Deck(cards: List[Card]) {
   def drawNCards(n: Int): Tuple2[List[Card], Deck] = new Tuple2(cards.slice(0, Math.min(numberOfCards, n)), new Deck(cards.slice(Math.min(numberOfCards, n), numberOfCards)))
   def shuffle: Deck = Deck(Random.shuffle(cards))
   override def toString: String = "Deck [size: " + numberOfCards + "]"
-  def print: Unit = cards.foreach { println }
 
   //Erste Karte wird nach Hinten geschoben, aber: da gibt´s doch sicher noch ne elegantere Methode?!?!
   //def defineTrumpCard: Deck = Deck(cards.slice(1, cards.size-2) :+ cards(cards.size-1))
@@ -31,11 +30,21 @@ case class Deck(cards: List[Card]) {
 
   //Suit der letzten Karte wird zurückgegeben, macht erst Sinn, nachdem defineTrumpCard aufgerufen wurde
   def getTrumpSuit: Suit = cards(cards.size - 1).suit
+
+  def toXml = {
+    <deck>{ cards.map(c => c.toXml) }</deck>
+  }
 }
 
 object Deck {
   def getInitialCards(startWith: Rank): List[Card] = {
     val cards = for (suit <- Suit.values; rank <- Rank.values if rank >= startWith) yield Card(suit, rank, false)
     Random.shuffle(cards)
+  }
+
+  def fromXml(node: scala.xml.Node) = {
+    val cardNodes = (node \\ "card")
+    val cards = (for (card <- cardNodes) yield (Card.fromXml(card.head))).toList
+    Deck(cards)
   }
 }

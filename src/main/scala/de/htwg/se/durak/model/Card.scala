@@ -16,10 +16,14 @@ case class Card(suit: Suit, rank: Rank, isTrump: Boolean = false) extends Ordere
 
   def isSameSuit(that: Card): Boolean = this.suit == that.suit
 
+  def toXml: scala.xml.Node = {
+    <card><suit>{ suit.toString }</suit><rank>{ rank.toString }</rank><isTrump>{ isTrump }</isTrump></card>
+  }
+
 }
 
 object Card {
-  def parseToCard(suit: String, rank: String): Card = {
+  def parseToCard(suit: String, rank: String, isTrump: Boolean = false): Card = {
     var newRank: Rank = null
     rank match {
       case "Ace" | "ace" | "a" => newRank = Rank.Ace
@@ -47,8 +51,15 @@ object Card {
       case _ => newSuit
     }
 
-    if (newRank != null && newSuit != null) Card(newSuit, newRank)
+    if (newRank != null && newSuit != null) Card(newSuit, newRank, isTrump)
     else null
+  }
+
+  def fromXml(node: scala.xml.Node): Card = {
+    val suit = (node \ "suit").text
+    val rank = (node \ "rank").text
+    val isTrump = (node \ "isTrump").text.toBoolean
+    parseToCard(suit, rank, isTrump)
   }
 }
 

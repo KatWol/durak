@@ -73,5 +73,15 @@ class PlayerSpec extends WordSpec with Matchers {
       player = player.setTurn(false)
       player.hisTurn should be(false)
     }
+    
+    "have a Xml presentation" in {
+      val player1 = Player("Max", 1, List[Card]())
+      player1.toXml.toString should be ("<player><name>Max</name><number>1</number><cards></cards><status>Inactive</status><hisTurn>false</hisTurn></player>")
+    }
+    
+    "be parsed from its Xml presentation" in {
+      Player.fromXml(<player><name>Max</name><number>1</number><cards></cards><status>Inactive</status><hisTurn>false</hisTurn></player>) should be (player1)
+      Player.fromXml(<player><name>Max</name><number>1</number><cards><card><suit>hearts</suit><rank>nine</rank><isTrump>false</isTrump></card></cards><status>Inactive</status><hisTurn>false</hisTurn></player>) should be (Player("Max", 1, List[Card](Card(Suit.Hearts, Rank.Nine))))
+    }
   }
 }

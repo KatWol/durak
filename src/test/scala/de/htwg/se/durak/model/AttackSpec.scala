@@ -1,7 +1,7 @@
 package de.htwg.se.durak.model
 
-import org.scalatest._
 import org.junit.runner.RunWith
+import org.scalatest._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
@@ -43,6 +43,15 @@ class AttackSpec extends WordSpec with Matchers {
     "return a list of all the cards in the attack" in {
       attack.getCards should be(List[Card](Card(Suit.Hearts, Rank.Seven)))
       attack2.getCards should be(List[Card](Card(Suit.Hearts, Rank.Seven), Card(Suit.Hearts, Rank.Nine)))
+    }
+    
+    "have an Xml presentation" in {
+      attack.toXml.toString should be ("<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard>null</defendingCard></attack>")
+    }
+    
+    "be parsed from its Xml presentation" in {
+      Attack.fromXml(<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard>null</defendingCard></attack>) should be (attack)
+      Attack.fromXml(<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard><card><suit>hearts</suit><rank>nine</rank><isTrump>false</isTrump></card></defendingCard></attack>) should be (attack2)
     }
 
   }

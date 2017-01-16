@@ -131,10 +131,6 @@ class DeckSpec extends WordSpec with Matchers {
         deck.toString should be("Deck [size: 36]")
       }
 
-      "be able to print out all cards" in {
-        newDeck.print should be(());
-      }
-
       var deck2 = Deck(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true)))
       "define the trump suit and add the first card to the back of the deck" in {
         deck2 = deck2.defineTrumpCard
@@ -143,6 +139,14 @@ class DeckSpec extends WordSpec with Matchers {
 
       "return the current trump suit" in {
         deck2.getTrumpSuit should be(Suit.Spades)
+      }
+      
+      "have an Xml presentation" in {
+        deck2.toXml.toString should be ("<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>")
+      }
+      
+      "be parsed from its Xml presentation" in {
+        Deck.fromXml(<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>) should be (deck2)
       }
     }
 
