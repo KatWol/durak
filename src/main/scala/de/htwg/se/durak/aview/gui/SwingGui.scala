@@ -91,35 +91,25 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
 
   def playerPanel = new FlowPanel() {
 
-    contents += new Label {
-      text = "Karte1"
-      horizontalAlignment = Alignment.Left
-      icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
-    }
-    contents += new Label {
-      text = "Karte2"
-      horizontalAlignment = Alignment.Left
-      icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
-    }
-    contents += new Label {
-      text = "Karte3"
-      horizontalAlignment = Alignment.Left
-      icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
-    }
-    contents += new Label {
-      text = "Karte4"
-      horizontalAlignment = Alignment.Left
-      icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
-    }
-    contents += new Label {
-      text = "Karte5"
-      horizontalAlignment = Alignment.Left
-      icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
-    }
-    contents += new Label {
-      text = "Karte6"
-      horizontalAlignment = Alignment.Left
-      icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
+    for (card <- controller.getCurrentPlayersCards) {
+      /*contents += new Label {
+        font = myFont
+        text = card.suit + " " + card.rank
+        horizontalAlignment = Alignment.Left
+        icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
+      }*/
+
+      contents += new BoxPanel(Orientation.Vertical) {
+        contents += new Label {
+          icon = new ImageIcon("D:/Diverses/durak/karten/a1_big.jpg")
+        }
+        contents += new Label {
+          font = myFont
+          text = card.suit + " " + card.rank
+          horizontalAlignment = Alignment.Left
+        }
+      }
+
     }
   }
 
