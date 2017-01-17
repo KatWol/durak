@@ -1,8 +1,10 @@
-package de.htwg.se.durak.model
+package de.htwg.se.durak.model.impl
 
 import org.scalatest._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import de.htwg.se.durak.model.Rank
+import de.htwg.se.durak.model.Suit
 
 @RunWith(classOf[JUnitRunner])
 class DeckSpec extends WordSpec with Matchers {
@@ -10,7 +12,7 @@ class DeckSpec extends WordSpec with Matchers {
   "A Deck" when {
     "empty" should {
 
-      val emptyDeck = Deck(List[Card]())
+      val emptyDeck = new Deck(List[Card]())
 
       "be empty" in {
         emptyDeck.isEmpty should be(true);
@@ -21,7 +23,7 @@ class DeckSpec extends WordSpec with Matchers {
       }
 
       "return a tuple with an empty list and an empty deck if the deck is empty" in {
-        emptyDeck.drawNCards(1) should be((List[Card](), Deck(List[Card]())))
+        emptyDeck.drawNCards(1) should be((List[Card](), new Deck(List[Card]())))
       }
     }
 
@@ -103,7 +105,7 @@ class DeckSpec extends WordSpec with Matchers {
         deck.cards should not be shuffledDeck.cards
       }
 
-      val newDeck = Deck(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Diamonds, Rank.Seven)))
+      val newDeck = new Deck(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Diamonds, Rank.Seven)))
 
       "have the correct size" in {
         newDeck.numberOfCards should be(3)
@@ -131,22 +133,22 @@ class DeckSpec extends WordSpec with Matchers {
         deck.toString should be("Deck [size: 36]")
       }
 
-      var deck2 = Deck(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true)))
+      var deck2 = new Deck(List(Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true)))
       "define the trump suit and add the first card to the back of the deck" in {
         deck2 = deck2.defineTrumpCard
-        deck2 should be(Deck(List(Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true), Card(Suit.Spades, Rank.Two, true))))
+        deck2 should be(new Deck(List(Card(Suit.Hearts, Rank.Three), Card(Suit.Spades, Rank.Seven, true), Card(Suit.Spades, Rank.Two, true))))
       }
 
       "return the current trump suit" in {
         deck2.getTrumpSuit should be(Suit.Spades)
       }
-      
+
       "have an Xml presentation" in {
-        deck2.toXml.toString should be ("<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>")
+        deck2.toXml.toString should be("<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>")
       }
-      
+
       "be parsed from its Xml presentation" in {
-        Deck.fromXml(<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>) should be (deck2)
+        Deck.fromXml(<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>) should be(deck2)
       }
     }
 

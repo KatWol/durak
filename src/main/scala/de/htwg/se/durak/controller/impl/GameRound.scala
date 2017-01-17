@@ -9,12 +9,22 @@ import de.htwg.se.durak.model.Player
 import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.model.Rank
 import de.htwg.se.util.Observer
+import com.google.inject.Inject
+import com.google.inject.Guice
+import de.htwg.se.durak.DurakModule
+import de.htwg.se.durak.model.DeckFactory
+import de.htwg.se.durak.model.PlayerFactory
+import de.htwg.se.durak.controller.GameRoundControllerFactory
 
 class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends GameRoundController {
+  val injector = Guice.createInjector(new DurakModule())
+
   val startRank = startWithRank //Um auf den Wert in GameFinished zugreifen zu können
   //*********** BEGINN KONSTRUKTOR ***********
 
   //1. Deck wird beginnend ab Rank startWithRank instanziert mit gemischten Karten
+
+  val deckFactory = injector.getInstance(classOf[DeckFactory])
   var deck: Deck = getDeck(startWithRank)
   //2. Spieler werden über Namens-Liste und bereits instanziertem Deck instanziert
   val allPlayers = getPlayers(playerNames) //Enthält eine Kopie aller Spieler, um diese bei einer neuen Runde wieder richtig zu setzen
@@ -53,7 +63,7 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
     } catch {
       case e: IllegalStateException => statusLine = e.getMessage
     }
-    
+
     notifyObservers
   }
   override def redo = {
@@ -82,25 +92,26 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
   override def getAttacksOnTableString = round.getAttacksOnTableString
   override def getAttacksOnTable = round.attacks
 
-  //*********** Sonstige Methoden ***********************
+  //******************************* Sonstige Methoden ***********************
   def changeState(state: GameState) = this.state = state;
 
-  def getDeck(startWithRank: Rank): Deck = new Deck(startWithRank)
+  def getDeck(startWithRank: Rank) = deckFactory.create(startWithRank)
 
   def getPlayers(playerNames: List[String]): List[Player] = {
+    val playerFactory = injector.getInstance(classOf[PlayerFactory])
     var i = -1
     for (name <- playerNames) yield {
       i = i + 1
-      Player(name, i, List[Card](), PlayerStatus.Inactive)
+      playerFactory.create(name, i, List[Card]())
     }
   }
 
   def dealCards(allPlayers: List[Player]) = {
     var newDeck = deck
-    val players = for (player <- allPlayers) yield {
+    val players: List[Player] = for (player <- allPlayers) yield {
       val temp = newDeck.drawNCards(6)
       newDeck = temp._2
-      player.copy(cards = temp._1)
+      player.takeCards(temp._1)
     }
     (players, newDeck)
   }
@@ -115,11 +126,15 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
   //Rückgabe einer Liste mit Player mit der Startaufstellung für Beginn-Strategie "Kleinster Trumpf"
   def setPlayerStatusForNextRound(index: Int): List[Player] = {
     (for (i <- 0 to (activePlayers.size - 1)) yield {
-      if (i == index % activePlayers.size) activePlayers(i).copy(status = PlayerStatus.Attacker, hisTurn = true) //Erster Angreifer
-      else if (i == (index + 1) % activePlayers.size) activePlayers(i).copy(status = PlayerStatus.Defender, hisTurn = false) //Verteidiger
-      else if (i == (index + 2) % activePlayers.size) activePlayers(i).copy(status = PlayerStatus.Attacker, hisTurn = false) //Zweiter Angreifer
-      else activePlayers(i).copy(status = PlayerStatus.Inactive, hisTurn = false)
+      if (i == index % activePlayers.size) activePlayers(i).setStatus(PlayerStatus.Attacker).setTurn(true) //Erster Angreifer
+      else if (i == (index + 1) % activePlayers.size) activePlayers(i).setStatus(PlayerStatus.Defender).setTurn(false) //Verteidiger
+      else if (i == (index + 2) % activePlayers.size) activePlayers(i).setStatus(PlayerStatus.Attacker).setTurn(false) //Zweiter Angreifer
+      else activePlayers(i).setStatus(PlayerStatus.Inactive).setTurn(false)
     }).toList
   }
 
+}
+
+class GameRoundFactory extends GameRoundControllerFactory {
+  override def create(playerNames: List[String], startWithRank: String = "seven", startWithSmallestTrump: Boolean = true): GameRound = new GameRound(playerNames, Rank.parseFromString(startWithRank), startWithSmallestTrump)
 }

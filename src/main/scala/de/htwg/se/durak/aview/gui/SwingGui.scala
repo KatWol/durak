@@ -1,10 +1,13 @@
 package de.htwg.se.durak.aview.gui
 
-import scala.swing._
+import scala.swing.Alignment
+import scala.swing.Frame
+import scala.swing.GridPanel
+import scala.swing.Label
+import scala.swing.TextField
 
-import de.htwg.se.durak.controller.impl.GameRound
-import de.htwg.se.util.Observer
 import de.htwg.se.durak.controller.GameRoundController
+import de.htwg.se.util.Observer
 
 class SwingGui(var controller: GameRoundController) extends Frame with Observer {
   controller.add(this)

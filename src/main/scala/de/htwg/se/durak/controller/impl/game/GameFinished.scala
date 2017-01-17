@@ -6,6 +6,9 @@ import de.htwg.se.durak.model.Deck
 import de.htwg.se.durak.model.Player
 import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.controller.impl.Round
+import com.google.inject.Guice
+import de.htwg.se.durak.DurakModule
+import de.htwg.se.durak.model.PlayerFactory
 
 class GameFinished extends GameState {
   override def updateState(game: GameRound) = {
@@ -31,7 +34,7 @@ class GameFinished extends GameState {
     var players: List[Player] =
       for (player <- allPlayers) yield {
         temp = deck.drawNCards(6)
-        player.copy(cards = temp._1, status = PlayerStatus.Inactive)
+        player.setCards(temp._1).setStatus(PlayerStatus.Inactive)
       }
     (players, temp._2)
   }

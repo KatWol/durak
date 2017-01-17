@@ -1,8 +1,9 @@
 package de.htwg.se.durak.aview.tui
 
-import de.htwg.se.durak.controller.impl.GameRound
-import de.htwg.se.util.Observer
+import com.google.inject.Inject
+
 import de.htwg.se.durak.controller.GameRoundController
+import de.htwg.se.util.Observer
 
 class Tui(var controller: GameRoundController) extends Observer {
   controller.add(this)

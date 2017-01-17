@@ -1,8 +1,10 @@
-package de.htwg.se.durak.model
+package de.htwg.se.durak.model.impl
 
-import org.scalatest._
 import org.junit.runner.RunWith
+import org.scalatest._
 import org.scalatest.junit.JUnitRunner
+
+import de.htwg.se.durak.model.Suit
 
 @RunWith(classOf[JUnitRunner])
 class SuitSpec extends WordSpec with Matchers {
@@ -13,10 +15,6 @@ class SuitSpec extends WordSpec with Matchers {
 
       val notAllowedSuits = Array("red", "black")
       Suit.values.foreach { e => notAllowedSuits.contains(e.toString) should be(false) }
-    }
-
-    "return a random trump suit" in {
-      Suit.values.contains(Suit.getRandomTrumpSuit) should be(true)
     }
   }
 }

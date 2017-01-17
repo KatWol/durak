@@ -18,4 +18,6 @@ libraryDependencies ++= {
 libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.11" % "1.0.1"
 
 libraryDependencies += "junit" % "junit" % "4.8" % "test"
+libraryDependencies += "com.google.inject" % "guice" % "3.0"
+libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "3.0"
 connectInput in run := true

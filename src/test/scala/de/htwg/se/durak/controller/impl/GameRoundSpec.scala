@@ -4,7 +4,7 @@ import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
 import de.htwg.se.durak.controller.impl.game.GameNotFinished
-import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.impl.Card
 import de.htwg.se.durak.model.Deck
 import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.model.Rank

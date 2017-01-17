@@ -6,46 +6,61 @@ import org.scalatest.WordSpec
 import de.htwg.se.durak.model._
 import de.htwg.se.durak.controller.impl.round._
 import de.htwg.se.util.Observer
+import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.Attack
+import de.htwg.se.durak.model.Player
+import com.google.inject.Guice
+import de.htwg.se.durak.DurakModule
+import de.htwg.se.durak.model.Player
+import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.Attack
+import de.htwg.se.durak.model.Deck
 
 class RoundSpec extends WordSpec with Matchers {
-  val card1 = Card(Suit.Hearts, Rank.Jack, true)
-  val card2 = Card(Suit.Clubs, Rank.Seven)
-  val card3 = Card(Suit.Diamonds, Rank.Ten)
-  val card4 = Card(Suit.Diamonds, Rank.Queen)
-  val card5 = Card(Suit.Hearts, Rank.Seven, true)
-  val card6 = Card(Suit.Spades, Rank.Ace)
+  val injector = Guice.createInjector(new DurakModule())
+  val cardFactory = injector.getInstance(classOf[CardFactory])
+  val playerFactory = injector.getInstance(classOf[PlayerFactory])
+  val attackFactory = injector.getInstance(classOf[AttackFactory])
+  val deckFactory = injector.getInstance(classOf[DeckFactory])
 
-  val card7 = Card(Suit.Hearts, Rank.Queen, true)
-  val card8 = Card(Suit.Clubs, Rank.Jack)
-  val card9 = Card(Suit.Hearts, Rank.Eight, true)
-  val card10 = Card(Suit.Diamonds, Rank.Ace)
-  val card11 = Card(Suit.Hearts, Rank.Ten, true)
-  val card12 = Card(Suit.Diamonds, Rank.Jack)
+  val card1 = cardFactory.create("Hearts", "Jack", true)
+  val card2 = cardFactory.create(Suit.Clubs.toString, Rank.Seven.toString)
+  val card3 = cardFactory.create(Suit.Diamonds.toString, Rank.Ten.toString)
+  val card4 = cardFactory.create(Suit.Diamonds.toString, Rank.Queen.toString)
+  val card5 = cardFactory.create(Suit.Hearts.toString, Rank.Seven.toString, true)
+  val card6 = cardFactory.create(Suit.Spades.toString, Rank.Ace.toString)
 
-  val card13 = Card(Suit.Clubs, Rank.Seven)
-  val card14 = Card(Suit.Diamonds, Rank.Queen)
-  val card15 = Card(Suit.Spades, Rank.Ace)
-  val card16 = Card(Suit.Hearts, Rank.Nine, true)
-  val card17 = Card(Suit.Spades, Rank.Nine)
-  val card18 = Card(Suit.Diamonds, Rank.Nine)
+  val card7 = cardFactory.create(Suit.Hearts.toString, Rank.Queen.toString, true)
+  val card8 = cardFactory.create(Suit.Clubs.toString, Rank.Jack.toString)
+  val card9 = cardFactory.create(Suit.Hearts.toString, Rank.Eight.toString, true)
+  val card10 = cardFactory.create(Suit.Diamonds.toString, Rank.Ace.toString)
+  val card11 = cardFactory.create(Suit.Hearts.toString, Rank.Ten.toString, true)
+  val card12 = cardFactory.create(Suit.Diamonds.toString, Rank.Jack.toString)
 
-  val card19 = Card(Suit.Hearts, Rank.King, true)
-  val card20 = Card(Suit.Clubs, Rank.Queen)
-  val card21 = Card(Suit.Hearts, Rank.Ace, true)
-  val card22 = Card(Suit.Diamonds, Rank.Eight)
-  val card23 = Card(Suit.Spades, Rank.Eight)
-  val card24 = Card(Suit.Clubs, Rank.Eight)
+  val card13 = cardFactory.create(Suit.Clubs.toString, Rank.Seven.toString)
+  val card14 = cardFactory.create(Suit.Diamonds.toString, Rank.Queen.toString)
+  val card15 = cardFactory.create(Suit.Spades.toString, Rank.Ace.toString)
+  val card16 = cardFactory.create(Suit.Hearts.toString, Rank.Nine.toString, true)
+  val card17 = cardFactory.create(Suit.Spades.toString, Rank.Nine.toString)
+  val card18 = cardFactory.create(Suit.Diamonds.toString, Rank.Nine.toString)
+
+  val card19 = cardFactory.create(Suit.Hearts.toString, Rank.King.toString, true)
+  val card20 = cardFactory.create(Suit.Clubs.toString, Rank.Queen.toString)
+  val card21 = cardFactory.create(Suit.Hearts.toString, Rank.Ace.toString, true)
+  val card22 = cardFactory.create(Suit.Diamonds.toString, Rank.Eight.toString)
+  val card23 = cardFactory.create(Suit.Spades.toString, Rank.Eight.toString)
+  val card24 = cardFactory.create(Suit.Clubs.toString, Rank.Eight.toString)
 
   val cards = List[Card](card13, card14, card15, card16, card17, card18, card19, card20, card22, card23, card24, card21)
 
-  var player1 = Player("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6), PlayerStatus.Attacker, true)
-  var player2 = Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
-  var round = new Round(Deck(cards), List[Player](player1, player2), Suit.Hearts, Vector())
+  var player1 = playerFactory.create("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6)).setStatus(PlayerStatus.Attacker).setTurn(true)
+  var player2 = playerFactory.create("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
+  var round = new Round(deckFactory.create(Rank.Seven), List[Player](player1, player2), Suit.Hearts, Vector())
 
   def resetRound() = {
-    player1 = Player("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6), PlayerStatus.Attacker, true)
-    player2 = Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
-    round = new Round(Deck(cards), List[Player](player1, player2), Suit.Hearts, Vector())
+    player1 = playerFactory.create("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6)).setStatus(PlayerStatus.Attacker).setTurn(true)
+    player2 = playerFactory.create("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
+    round = new Round(deckFactory.create(Rank.Seven), List[Player](player1, player2), Suit.Hearts, Vector())
   }
 
   "A Round with 2 players" when {
@@ -75,7 +90,7 @@ class RoundSpec extends WordSpec with Matchers {
         player1 = round.getCurrentPlayer()
         player1.cards.contains(card2) should be(false)
         player1.hisTurn should be(true)
-        round.attacks.contains(Attack(card2)) should be(true)
+        round.attacks.contains(attackFactory.create(card2)) should be(true)
       }
 
       "check if the card the attacker plays is valid" in {
@@ -94,7 +109,7 @@ class RoundSpec extends WordSpec with Matchers {
         player1.name should be("Jakob")
         player1.cards.contains(card5) should be(false)
         player1.hisTurn should be(true)
-        round.attacks.contains(Attack(card5)) should be(true)
+        round.attacks.contains(attackFactory.create(card5)) should be(true)
 
         round.endTurn //Attacker
         round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
@@ -110,34 +125,34 @@ class RoundSpec extends WordSpec with Matchers {
       }
 
       "check if the card the defender plays is valid" in {
-        round.playCard(card10, Attack(card2))
+        round.playCard(card10, attackFactory.create(card2))
         round.statusLine should be("This card is not valid for this attack")
         round.getCurrentPlayer.cards.contains(card10) should be(true)
       }
 
       "continue with defending player defending that attack" in {
-        round.playCard(card8, Attack(card2)) //Defender
+        round.playCard(card8, attackFactory.create(card2)) //Defender
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card8)
 
         player2 = round.getCurrentPlayer()
         player2.name should be("Kathrin")
         player2.cards.contains(card8) should be(false)
         player2.hisTurn should be(true)
-        round.attacks.contains(Attack(card2, card8)) should be(true)
+        round.attacks.contains(attackFactory.create(card2, card8)) should be(true)
       }
 
       "check if the attack the defender wants to finish is on the table" in {
-        round.playCard(card10, Attack(card1))
+        round.playCard(card10, attackFactory.create(card1))
         round.statusLine should be("This attack does not exist")
       }
 
       "return if all attacks are defended" in {
         round.allAttacksDefended should be(false)
 
-        round.playCard(card9, Attack(card5)) //Defender
+        round.playCard(card9, attackFactory.create(card5)) //Defender
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card9)
 
-        round.attacks.contains(Attack(card5, card9)) should be(true)
+        round.attacks.contains(attackFactory.create(card5, card9)) should be(true)
         player2 = round.getCurrentPlayer()
         player2.name should be("Kathrin")
         player2.cards.contains(card9) should be(false)
@@ -176,7 +191,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.endTurn //Attacker
         round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
 
-        round.playCard(card7, Attack(card1)) //Defender
+        round.playCard(card7, attackFactory.create(card1)) //Defender
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card7)
 
         round.endTurn //Defender
@@ -189,7 +204,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
 
         println(round.getCurrentPlayer.cards)
-        round.playCard(card10, Attack(card4)) //Defender
+        round.playCard(card10, attackFactory.create(card4)) //Defender
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card10)
 
         round.endTurn //Defender
@@ -201,7 +216,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.endTurn //Attacker
         round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
 
-        round.playCard(card11, Attack(card6)) //Defender
+        round.playCard(card11, attackFactory.create(card6)) //Defender
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card11)
 
         round.endTurn //Defender
@@ -213,7 +228,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.endTurn //Attacker
         round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
 
-        round.playCard(card12, Attack(card3)) //Defender
+        round.playCard(card12, attackFactory.create(card3)) //Defender
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card12)
 
         round.endTurn //Defender
@@ -252,7 +267,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.playCard(card2)
         round.playCard(card5)
         round.endTurn
-        round.playCard(card8, Attack(card2))
+        round.playCard(card8, attackFactory.create(card2))
         round.endTurn
 
         round.state shouldBe a[RoundFinished]
@@ -282,7 +297,7 @@ class RoundSpec extends WordSpec with Matchers {
         resetRound
         round.playCard(card2)
         round.endTurn
-        round.playCard(card8, Attack(card2))
+        round.playCard(card8, attackFactory.create(card2))
         round.endTurn
         round.endTurn
 
@@ -308,40 +323,40 @@ class RoundSpec extends WordSpec with Matchers {
     }
   }
 
-  val card1a = Card(Suit.Hearts, Rank.Seven, true)
-  val card2a = Card(Suit.Hearts, Rank.Jack, true)
-  val card3a = Card(Suit.Diamonds, Rank.Ten)
-  val card4a = Card(Suit.Clubs, Rank.King)
-  val card5a = Card(Suit.Diamonds, Rank.King)
-  val card6a = Card(Suit.Spades, Rank.Ten)
+  val card1a = cardFactory.create(Suit.Hearts.toString, Rank.Seven.toString, true)
+  val card2a = cardFactory.create(Suit.Hearts.toString, Rank.Jack.toString, true)
+  val card3a = cardFactory.create(Suit.Diamonds.toString, Rank.Ten.toString)
+  val card4a = cardFactory.create(Suit.Clubs.toString, Rank.King.toString)
+  val card5a = cardFactory.create(Suit.Diamonds.toString, Rank.King.toString)
+  val card6a = cardFactory.create(Suit.Spades.toString, Rank.Ten.toString)
 
-  val card7a = Card(Suit.Hearts, Rank.Eight, true)
-  val card8a = Card(Suit.Clubs, Rank.Jack)
-  val card9a = Card(Suit.Hearts, Rank.Queen, true)
-  val card10a = Card(Suit.Diamonds, Rank.Ace)
-  val card11a = Card(Suit.Hearts, Rank.Ten, true)
-  val card12a = Card(Suit.Diamonds, Rank.Jack)
+  val card7a = cardFactory.create(Suit.Hearts.toString, Rank.Eight.toString, true)
+  val card8a = cardFactory.create(Suit.Clubs.toString, Rank.Jack.toString)
+  val card9a = cardFactory.create(Suit.Hearts.toString, Rank.Queen.toString, true)
+  val card10a = cardFactory.create(Suit.Diamonds.toString, Rank.Ace.toString)
+  val card11a = cardFactory.create(Suit.Hearts.toString, Rank.Ten.toString, true)
+  val card12a = cardFactory.create(Suit.Diamonds.toString, Rank.Jack.toString)
 
-  val card13a = Card(Suit.Clubs, Rank.Seven)
-  val card14a = Card(Suit.Diamonds, Rank.Queen)
-  val card15a = Card(Suit.Spades, Rank.Ace)
-  val card16a = Card(Suit.Hearts, Rank.Nine, true)
-  val card17a = Card(Suit.Spades, Rank.Nine)
-  val card18a = Card(Suit.Diamonds, Rank.Nine)
+  val card13a = cardFactory.create(Suit.Clubs.toString, Rank.Seven.toString)
+  val card14a = cardFactory.create(Suit.Diamonds.toString, Rank.Queen.toString)
+  val card15a = cardFactory.create(Suit.Spades.toString, Rank.Ace.toString)
+  val card16a = cardFactory.create(Suit.Hearts.toString, Rank.Nine.toString, true)
+  val card17a = cardFactory.create(Suit.Spades.toString, Rank.Nine.toString)
+  val card18a = cardFactory.create(Suit.Diamonds.toString, Rank.Nine.toString)
 
-  val card19a = Card(Suit.Hearts, Rank.King, true)
-  val card20a = Card(Suit.Clubs, Rank.Queen)
-  val card21a = Card(Suit.Hearts, Rank.Ace, true)
-  val card22a = Card(Suit.Diamonds, Rank.Eight)
-  val card23a = Card(Suit.Spades, Rank.Eight)
-  val card24a = Card(Suit.Clubs, Rank.Eight)
+  val card19a = cardFactory.create(Suit.Hearts.toString, Rank.King.toString, true)
+  val card20a = cardFactory.create(Suit.Clubs.toString, Rank.Queen.toString)
+  val card21a = cardFactory.create(Suit.Hearts.toString, Rank.Ace.toString, true)
+  val card22a = cardFactory.create(Suit.Diamonds.toString, Rank.Eight.toString)
+  val card23a = cardFactory.create(Suit.Spades.toString, Rank.Eight.toString)
+  val card24a = cardFactory.create(Suit.Clubs.toString, Rank.Eight.toString)
 
-  var player1a = Player("Jakob", 0, List(card1a, card2a, card3a, card4a, card5a, card6a), PlayerStatus.Attacker, true)
-  var player2a = Player("Kathrin", 1, List(card7a, card8a, card9a, card10a, card11a, card12a), PlayerStatus.Defender, false)
-  var player3a = Player("David", 2, List(card13a, card14a, card15a, card16a, card17a, card18a), PlayerStatus.Attacker, false)
-  var player4a = Player("Thomas", 3, List(card19a, card20a, card21a, card22a, card23a, card24a))
+  var player1a = playerFactory.create("Jakob", 0, List(card1a, card2a, card3a, card4a, card5a, card6a)).setStatus(PlayerStatus.Attacker).setTurn(true)
+  var player2a = playerFactory.create("Kathrin", 1, List(card7a, card8a, card9a, card10a, card11a, card12a)).setStatus(PlayerStatus.Defender)
+  var player3a = playerFactory.create("David", 2, List(card13a, card14a, card15a, card16a, card17a, card18a)).setStatus(PlayerStatus.Attacker)
+  var player4a = playerFactory.create("Thomas", 3, List(card19a, card20a, card21a, card22a, card23a, card24a))
 
-  var rounda = new Round(Deck(cards), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
+  var rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
 
   "A Round with 4 Players" should {
     "when no player misses a turn that ends the round" should {
@@ -359,7 +374,7 @@ class RoundSpec extends WordSpec with Matchers {
 
       "start with the current player starting an attack until the player ends the attack" in {
         rounda.playCard("hearts", "seven", "") //1. Attacker
-        rounda.attacks.contains(Attack(card1a)) should be(true)
+        rounda.attacks.contains(attackFactory.create(card1a)) should be(true)
         rounda.getCurrentPlayer.cards.contains(card1a) should be(false)
 
         rounda.endTurn //1. Attacker
@@ -374,7 +389,7 @@ class RoundSpec extends WordSpec with Matchers {
       }
 
       "continue with defending player defending that attack until the player ends his turn" in {
-        rounda.playCard(card7a, Attack(card1a)) //Defender
+        rounda.playCard(card7a, attackFactory.create(card1a)) //Defender
 
         rounda.endTurn //Defender
         rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
@@ -407,7 +422,7 @@ class RoundSpec extends WordSpec with Matchers {
 
         rounda.state shouldBe a[DefendersTurn]
 
-        rounda.playCard(card8a, Attack(card13a)) //Defender
+        rounda.playCard(card8a, attackFactory.create(card13a)) //Defender
         rounda.endTurn //Defender
 
         rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
@@ -416,7 +431,7 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.players.filter(_.number == 3)(0).hisTurn should be(false)
 
         rounda.state shouldBe a[SecondAttackersTurn]
-        rounda.getCurrentPlayer should be(Player("David", 2, List(card14a, card15a, card16a, card17a, card18a), PlayerStatus.Attacker, true))
+        rounda.getCurrentPlayer should be(playerFactory.create("David", 2, List(card14a, card15a, card16a, card17a, card18a)).setStatus(PlayerStatus.Attacker).setTurn(true))
         rounda.endTurn //2. Attacker
         rounda.turnMissed should be(true)
 
@@ -432,7 +447,7 @@ class RoundSpec extends WordSpec with Matchers {
       }
 
       "end turn if an attacker starts more than the maximum number of attacks" in {
-        rounda.playCard(card9a, Attack(card2a)) //Defender
+        rounda.playCard(card9a, attackFactory.create(card2a)) //Defender
         rounda.endTurn //Defender
 
         rounda.playCard(card14a) //2. Attacker
@@ -440,7 +455,7 @@ class RoundSpec extends WordSpec with Matchers {
 
         rounda.endTurn // 1. Attacker
 
-        rounda.playCard(card10a, Attack(card14a)) //Defender
+        rounda.playCard(card10a, attackFactory.create(card14a)) //Defender
         rounda.endTurn //Defender
 
         rounda.playCard(card15a) //2. Attacker
@@ -448,36 +463,35 @@ class RoundSpec extends WordSpec with Matchers {
 
         rounda.endTurn //1. Attacker
 
-        rounda.playCard(card11a, Attack(card15a)) //Defender
+        rounda.playCard(card11a, attackFactory.create(card15a)) //Defender
         rounda.endTurn //Defender
 
         rounda.endTurn //2. Attacker
-
-        //rounda.getCurrentPlayer should be (Player("Jakob", 0, List(card3a, card4a, card5a, card6a), PlayerStatus.Attacker, true))
 
         rounda.playCard(card3a) //1. Attacker
         rounda.playCard(card6a) //1. Attacker
 
         rounda.state shouldBe a[DefendersTurn]
 
-        val newRound = new Round(new Deck(Rank.Seven), List[Player](
-          Player("Kathrin", 0, List[Card](Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven), Card(Suit.Diamonds, Rank.Seven)), PlayerStatus.Attacker, true),
-          Player("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12), PlayerStatus.Defender)
-        ), Suit.Hearts, Vector())
+        val cardA = cardFactory.create(Suit.Diamonds.toString, Rank.Seven.toString)
+        val playerA = playerFactory.create("Kathrin", 0, List[Card](cardA, cardA, cardA, cardA, cardA, cardA)).setStatus(PlayerStatus.Attacker).setTurn(true)
+        val playerB = playerFactory.create("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
 
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
-        newRound.playCard(Card(Suit.Diamonds, Rank.Seven))
+        val newRound = new Round(deckFactory.create(Rank.Seven), List[Player](playerA, playerB), Suit.Hearts, Vector())
+
+        newRound.playCard(cardA)
+        newRound.playCard(cardA)
+        newRound.playCard(cardA)
+        newRound.playCard(cardA)
+        newRound.playCard(cardA)
+        newRound.playCard(cardA)
+        newRound.playCard(cardA)
 
         newRound.state shouldBe a[DefendersTurn]
       }
 
       "end when the maximum number of attacks is reached and all attacks are defended" in {
-        rounda.playCard(card12a, Attack(card3a))
+        rounda.playCard(card12a, attackFactory.create(card3a))
         rounda.endTurn
 
         rounda.state shouldBe a[RoundFinished]
@@ -506,10 +520,10 @@ class RoundSpec extends WordSpec with Matchers {
 
     "both attackers miss a turn in the same round" should {
       "end if both attackers miss a turn in the same round" in {
-        rounda = new Round(new Deck(cards), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
+        rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
         rounda.playCard(card1a) //1. Attacker
         rounda.endTurn //1. Attacker
-        rounda.playCard(card7a, Attack(card1a)) //Defender
+        rounda.playCard(card7a, attackFactory.create(card1a)) //Defender
         rounda.endTurn //Defender
         rounda.endTurn // 2. Attacker
         rounda.endTurn // 1. Attacker
@@ -540,7 +554,7 @@ class RoundSpec extends WordSpec with Matchers {
 
     "the defender misses a turn" should {
       "end when the defender misses a turn" in {
-        rounda = new Round(new Deck(cards), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
+        rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
         rounda.playCard(card1a) //1. Attacker
         rounda.endTurn //1. Attacker
 

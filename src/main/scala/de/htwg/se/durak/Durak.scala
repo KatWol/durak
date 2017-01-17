@@ -5,12 +5,19 @@ import de.htwg.se.durak.controller.impl.GameRound
 
 import scala.io.StdIn._
 import de.htwg.se.durak.aview.gui.SwingGui
+import de.htwg.se.durak.controller.GameRoundController
+import com.google.inject.Guice
+import de.htwg.se.durak.controller.GameRoundControllerFactory
 
 object Durak {
   def main(args: Array[String]): Unit = {
 
     enterPlayerNames
-    val controller = processPlayerNamesInput(readLine())
+
+    val playerNames = processPlayerNamesInput(readLine())
+    val injector = Guice.createInjector(new DurakModule)
+    val controllerFactory = injector.getInstance(classOf[GameRoundControllerFactory])
+    val controller = controllerFactory.create(playerNames)
     val tui = new Tui(controller)
     val gui = new SwingGui(controller)
     tui.printTui
@@ -23,6 +30,6 @@ object Durak {
     println("Please enter the names of the players, separed by comma:")
   }
 
-  def processPlayerNamesInput(input: String): GameRound = new GameRound(playerNames = input.split(",").map(_.trim).toList)
+  def processPlayerNamesInput(input: String): List[String] = input.split(",").map(_.trim).toList
 
 }

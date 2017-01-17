@@ -23,4 +23,23 @@ object Rank {
   case object Two extends Rank { val value = "two"; val pointValue = 2 }
 
   val values = List(Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace)
+
+  def parseFromString(string: String) = {
+    string match {
+      case "Ace" | "ace" | "a" => Rank.Ace
+      case "King" | "king" | "k" => Rank.King
+      case "Queen" | "queen" | "q" => Rank.Queen
+      case "Jack" | "jack" | "j" => Rank.Jack
+      case "Ten" | "ten" | "10" => Rank.Ten
+      case "Nine" | "nine" | "9" => Rank.Nine
+      case "Eight" | "eight" | "8" => Rank.Eight
+      case "Seven" | "seven" | "7" => Rank.Seven
+      case "Six" | "six" | "6" => Rank.Six
+      case "Five" | "five" | "5" => Rank.Five
+      case "Four" | "four" | "4" => Rank.Four
+      case "Three" | "three" | "3" => Rank.Three
+      case "Two" | "two" | "2" => Rank.Two
+      case _ => null
+    }
+  }
 }

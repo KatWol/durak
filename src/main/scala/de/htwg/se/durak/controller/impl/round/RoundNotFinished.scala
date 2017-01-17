@@ -13,9 +13,4 @@ abstract class RoundNotFinished extends RoundState {
     round.commandManager = round.commandManager.reset
   }
 
-  /*def putDownCard(round: Round, card: Card, attack: Attack = null) = {
-    round.updatePlayer(round.getCurrentPlayer, round.getCurrentPlayer.putDownCard(card))
-    round.statusLine = round.getCurrentPlayer.name + " played the card " + card
-  }*/
-
 }

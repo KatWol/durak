@@ -6,10 +6,16 @@ import de.htwg.se.durak.model._
 import de.htwg.se.util.Observable
 import de.htwg.se.util.Observer
 import de.htwg.se.util.CommandManager
+import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.Attack
+import de.htwg.se.durak.model.Player
+import com.google.inject.Guice
+import de.htwg.se.durak.DurakModule
 
 //State ändern sich in der folgenden Reihenfolge:
 //FirstAttackersFirstTurn -> DefendersTurn -> SecondAttackersTurn -> FirstAttackersTurn -> DefendersTurn ... -> RoundFinished (und hier je nachdem RoundFinishedDefenderWon oder RoundFinishedDefenderLost)
 class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, observers: Vector[Observer]) extends Observable {
+  val injector = Guice.createInjector(new DurakModule())
   private[controller] var state: RoundState = new FirstAttackersFirstTurn
   var attacks = List[Attack]()
   var turnMissed = false
@@ -82,8 +88,8 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
 
   //Zieht Karten vom Deck und fügt diese dem Spieler hinzu
   def drawNCards(player: Player, numberOfCards: Int) = {
-    val (card, newDeck) = deck.drawNCards(numberOfCards)
-    updatePlayer(player, player.takeCards(card))
+    val (cards, newDeck) = deck.drawNCards(numberOfCards)
+    updatePlayer(player, player.takeCards(cards.asInstanceOf[List[de.htwg.se.durak.model.impl.Card]]))
     deck = newDeck
   }
 
@@ -91,7 +97,7 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
   def updatePlayer(oldPlayer: Player, newPlayer: Player) = players = players.updated(getIndexOfPlayer(oldPlayer), newPlayer)
 
   //Returns a list containing all cards on the table
-  def getCardsOnTable: List[Card] = for (attack <- attacks; cards <- attack.getCards) yield cards
+  def getCardsOnTable: List[Card] = (for (attack <- attacks; cards <- attack.getCards) yield cards).asInstanceOf[List[Card]]
 
   //Returns a formated string of the attacks on the table
   def getAttacksOnTableString = {
@@ -107,9 +113,10 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
   def getAttackByIndex(index: Int) = attacks(index)
 
   def parseToCard(suit: String, rank: String): Card = {
-    var card = Card.parseToCard(suit, rank)
+    val cardFactory = injector.getInstance(classOf[CardFactory])
+    var card = cardFactory.create(suit, rank)
     if (card != null) {
-      if (trumpSuit == card.suit) card = card.copy(isTrump = true)
+      if (trumpSuit == card.suit) card = card.setTrump
     }
     card
   }

@@ -1,8 +1,10 @@
-package de.htwg.se.durak.model
+package de.htwg.se.durak.model.impl
 
 import org.scalatest._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+
+import de.htwg.se.durak.model.Rank;
 
 @RunWith(classOf[JUnitRunner])
 class RankSpec extends WordSpec with Matchers {

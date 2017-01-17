@@ -1,8 +1,10 @@
-package de.htwg.se.durak.model
+package de.htwg.se.durak.model.impl
 
 import org.scalatest._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+
+import de.htwg.se.durak.model.PlayerStatus;
 
 @RunWith(classOf[JUnitRunner])
 class PlayerStatusSpec extends WordSpec with Matchers {

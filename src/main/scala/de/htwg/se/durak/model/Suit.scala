@@ -13,5 +13,15 @@ object Suit {
   case object Hearts extends Suit { val value = "hearts" }
   case object Diamonds extends Suit { val value = "diamonds" }
   val values = List(Clubs, Spades, Hearts, Diamonds);
-  def getRandomTrumpSuit: Suit = Suit.values(util.Random.nextInt(4))
+
+  def parseFromString(string: String) = {
+    string match {
+      case "Hearts" | "hearts" | "h" => Suit.Hearts
+      case "Diamonds" | "diamonds" | "d" => Suit.Diamonds
+      case "Spades" | "spades" | "s" => Suit.Spades
+      case "Clubs" | "clubs" | "c" => Suit.Clubs
+      case _ => null
+    }
+  }
+
 }

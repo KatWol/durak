@@ -4,6 +4,7 @@ import de.htwg.se.util.Observable
 import de.htwg.se.durak.model.Card
 import de.htwg.se.durak.model.Attack
 import de.htwg.se.util.Observer
+import de.htwg.se.durak.model.Rank
 
 trait GameRoundController extends Observable {
   /**
@@ -30,12 +31,12 @@ trait GameRoundController extends Observable {
    * Adds the Subscriber to the round
    */
   def addSubscriberToRound(s: Observer)
-  
+
   /**
    * If possible, undoes the last action
    */
   def undo
-  
+
   /**
    * If a undo was called before, redoes that last undo
    */
@@ -57,4 +58,8 @@ trait GameRoundController extends Observable {
    */
   def getAttacksOnTableString: String //Für Tui
   def getAttacksOnTable: List[Attack] //Für Gui
+}
+
+trait GameRoundControllerFactory {
+  def create(playerNames: List[String], startWithRank: String = "seven", startWithSmallestTrump: Boolean = true): GameRoundController
 }
