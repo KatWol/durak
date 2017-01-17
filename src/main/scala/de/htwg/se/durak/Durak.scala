@@ -14,7 +14,8 @@ object Durak {
 
     enterPlayerNames
 
-    val playerNames = processPlayerNamesInput(readLine())
+    //val playerNames = processPlayerNamesInput(readLine())
+    val playerNames = processPlayerNamesInput("Jakob,Kathrin")
     val injector = Guice.createInjector(new DurakModule)
     val controllerFactory = injector.getInstance(classOf[GameRoundControllerFactory])
     val controller = controllerFactory.create(playerNames)
