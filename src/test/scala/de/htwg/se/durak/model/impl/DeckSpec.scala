@@ -150,6 +150,10 @@ class DeckSpec extends WordSpec with Matchers {
       "be parsed from its Xml presentation" in {
         Deck.fromXml(<deck><card><suit>hearts</suit><rank>three</rank><isTrump>false</isTrump></card><card><suit>spades</suit><rank>seven</rank><isTrump>true</isTrump></card><card><suit>spades</suit><rank>two</rank><isTrump>true</isTrump></card></deck>) should be(deck2)
       }
+
+      "return a list of the cards in the deck" in {
+        newDeck.getCards should be(List[Card](Card(Suit.Spades, Rank.Two), Card(Suit.Hearts, Rank.Three), Card(Suit.Diamonds, Rank.Seven)))
+      }
     }
 
   }

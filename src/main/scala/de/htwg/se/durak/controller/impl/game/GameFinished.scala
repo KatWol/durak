@@ -18,7 +18,7 @@ class GameFinished extends GameState {
   }
 
   def startNewGameRound(game: GameRound) = {
-    game.deck = game.getDeck(game.startRank)
+    game.deck = game.getDeck(game.startWithRank)
     val indexNextStartPlayer = getNextStartPlayer(game)
     val temp = getPlayers(game.allPlayers, game.deck)
     game.activePlayers = temp._1

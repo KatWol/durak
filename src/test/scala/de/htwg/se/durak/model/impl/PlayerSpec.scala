@@ -4,9 +4,8 @@ import org.junit.runner.RunWith
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
-
-import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.model.Rank
+import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.model.Suit
 
 @RunWith(classOf[JUnitRunner])
@@ -58,6 +57,10 @@ class PlayerSpec extends WordSpec with Matchers {
       player2.numberOfCards should be(2)
     }
 
+    "set the cards in the players hand" in {
+      player1.setCards(List(Card(Suit.Clubs, Rank.Three))) should be(Player("Max", 1, List[Card](Card(Suit.Clubs, Rank.Three))))
+    }
+
     var player = Player("Jakob", 3, List(Card(Suit.Clubs, Rank.Five), Card(Suit.Clubs, Rank.Nine), Card(Suit.Hearts, Rank.Two), Card(Suit.Clubs, Rank.Three)))
 
     "set the trump suit for all its cards" in {
@@ -70,6 +73,7 @@ class PlayerSpec extends WordSpec with Matchers {
 
     "return his smallest trump card" in {
       player.getSmallestTrumpCard should be(Card(Suit.Clubs, Rank.Three, true))
+      player1.getSmallestTrumpCard should be(null)
     }
 
     "set the turn correct" in {
@@ -80,13 +84,18 @@ class PlayerSpec extends WordSpec with Matchers {
     }
 
     "have a Xml presentation" in {
-      val player1 = Player("Max", 1, List[Card]())
-      player1.toXml.toString should be("<player><name>Max</name><number>1</number><cards></cards><status>Inactive</status><hisTurn>false</hisTurn></player>")
+      val player1 = Player("Max", 1, List[Card](Card(Suit.Hearts, Rank.Seven)))
+      player1.toXml.toString should be("<player><name>Max</name><number>1</number><cards><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></cards><status>Inactive</status><hisTurn>false</hisTurn></player>")
     }
 
     "be parsed from its Xml presentation" in {
       Player.fromXml(<player><name>Max</name><number>1</number><cards></cards><status>Inactive</status><hisTurn>false</hisTurn></player>) should be(player1)
       Player.fromXml(<player><name>Max</name><number>1</number><cards><card><suit>hearts</suit><rank>nine</rank><isTrump>false</isTrump></card></cards><status>Inactive</status><hisTurn>false</hisTurn></player>) should be(Player("Max", 1, List[Card](Card(Suit.Hearts, Rank.Nine))))
+    }
+
+    Player("Erika", 2, List[Card](Card(Suit.Diamonds, Rank.Nine), Card(Suit.Spades, Rank.Queen)))
+    "return a formatted string of the cards in the deck" in {
+      player2.printCards should be("\n" + Card(Suit.Diamonds, Rank.Nine).toString + "\n" + Card(Suit.Spades, Rank.Queen).toString)
     }
   }
 }

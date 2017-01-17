@@ -49,11 +49,20 @@ class AttackSpec extends WordSpec with Matchers {
 
     "have an Xml presentation" in {
       attack.toXml.toString should be("<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard>null</defendingCard></attack>")
+      attack2.toXml.toString should be("<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard><card><suit>hearts</suit><rank>nine</rank><isTrump>false</isTrump></card></defendingCard></attack>")
     }
 
     "be parsed from its Xml presentation" in {
       Attack.fromXml(<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard>null</defendingCard></attack>) should be(attack)
       Attack.fromXml(<attack><attackingCard><card><suit>hearts</suit><rank>seven</rank><isTrump>false</isTrump></card></attackingCard><defendingCard><card><suit>hearts</suit><rank>nine</rank><isTrump>false</isTrump></card></defendingCard></attack>) should be(attack2)
+    }
+
+    "reset the defending card" in {
+      attack2.resetDefendingCard should be(attack)
+    }
+
+    "have a string representation" in {
+      attack.toString should be("[attackingCard: " + attack.attackingCard.toString + ", defendingCard: null, isCompleted: false]")
     }
 
   }

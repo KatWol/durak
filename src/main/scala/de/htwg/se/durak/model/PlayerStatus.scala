@@ -16,6 +16,7 @@ object PlayerStatus {
       case "attacker" | "Attacker" => PlayerStatus.Attacker
       case "defender" | "Defender" => PlayerStatus.Defender
       case "inactive" | "Inactive" => PlayerStatus.Inactive
+      case _ => null
     }
   }
 }

@@ -78,6 +78,10 @@ class RoundSpec extends WordSpec with Matchers {
         round.getNextCurrentPlayer() should be(player2)
       }
 
+      "return null if asking for the second attacker" in {
+        round.getSecondAttacker should be(null)
+      }
+
       "not let the attacker miss a turn at the beginning of the round" in {
         round.endTurn
         round.statusLine should be("You must play a card at the beginning of a round")
@@ -93,12 +97,26 @@ class RoundSpec extends WordSpec with Matchers {
         round.attacks.contains(attackFactory.create(card2)) should be(true)
       }
 
+      "return a formatted string of the attacks on the table" in {
+        round.getAttacksOnTableString should be("\n0: " + round.attacks(0).toString)
+      }
+
+      "return the attack at a given index" in {
+        round.getAttackByIndex(0) should be(attackFactory.create(card2))
+      }
+
       "check if the card the attacker plays is valid" in {
         round.playCard(card1)
         round.statusLine should be("The rank of this card is not on the table yet")
 
         round.playCard(card13)
         round.statusLine should be("Player does not have this card in his/her hand")
+
+        round.playCard("hello", "world", "")
+        round.statusLine should be("False input!")
+
+        round.playCard("hello", "world", "0")
+        round.statusLine should be("False input!")
       }
 
       "continue with the attacking player playing cards until he ends his turn" in {
@@ -125,7 +143,7 @@ class RoundSpec extends WordSpec with Matchers {
       }
 
       "check if the card the defender plays is valid" in {
-        round.playCard(card10, attackFactory.create(card2))
+        round.playCard("diamonds", "ace", "1")
         round.statusLine should be("This card is not valid for this attack")
         round.getCurrentPlayer.cards.contains(card10) should be(true)
       }
@@ -185,6 +203,9 @@ class RoundSpec extends WordSpec with Matchers {
         round.playCard(card6) //Attacker
         round.statusLine should be("The rank of this card is not on the table yet")
 
+        round.playCard(card13)
+        round.statusLine should be("Player does not have this card in his/her hand")
+
         round.playCard(card1) //Attacker
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card1)
 
@@ -232,7 +253,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card12)
 
         round.endTurn //Defender
-        round.statusLine should be("The round is finished and the defender has won the round. Start a new round by entering r")
+        round.statusLine should be("The round is finished and the defender has won the round. Start a new round by entering s")
       }
 
       "change to state RoundFinished when maximum number of attacks are reached" in {
@@ -564,13 +585,13 @@ class RoundSpec extends WordSpec with Matchers {
 
       "return a message if a player trys to play a card after the round is finished" in {
         rounda.playCard(card13a)
-        rounda.statusLine should be("The round is finished. Start a new round by entering r")
+        rounda.statusLine should be("The round is finished. Start a new round by entering s")
 
       }
 
       "return a message if a player trys to end a turn after the round is finished" in {
         rounda.endTurn
-        rounda.statusLine should be("The round is finished. Start a new round by entering r")
+        rounda.statusLine should be("The round is finished. Start a new round by entering s")
       }
 
       /*"set correct player statuses for the next round after the round is finished" in {

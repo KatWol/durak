@@ -21,5 +21,15 @@ class PlayerStatusSpec extends WordSpec with Matchers {
       PlayerStatus.Attacker.toString should be("Attacker")
       PlayerStatus.Defender.toString should be("Defender")
     }
+
+    "be parsed from a String" in {
+      PlayerStatus.parseFromString("attacker") should be(PlayerStatus.Attacker)
+      PlayerStatus.parseFromString("Attacker") should be(PlayerStatus.Attacker)
+      PlayerStatus.parseFromString("Defender") should be(PlayerStatus.Defender)
+      PlayerStatus.parseFromString("defender") should be(PlayerStatus.Defender)
+      PlayerStatus.parseFromString("Inactive") should be(PlayerStatus.Inactive)
+      PlayerStatus.parseFromString("inactive") should be(PlayerStatus.Inactive)
+      PlayerStatus.parseFromString("hello") should be(null)
+    }
   }
 }
