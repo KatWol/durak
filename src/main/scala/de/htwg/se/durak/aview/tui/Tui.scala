@@ -4,32 +4,34 @@ import com.google.inject.Inject
 
 import de.htwg.se.durak.controller.GameRoundController
 import de.htwg.se.util.Observer
+import org.apache.log4j.Logger
 
 class Tui(var controller: GameRoundController) extends Observer {
   controller.add(this)
   controller.addSubscriberToRound(this)
+  val logger: Logger = Logger.getLogger("de.htwg.se.durak.aview.tui")
 
   override def update = printTui
 
   def printTui = {
-    println(controller.getGameStatus)
-    println(controller.getRoundStatus)
-    println("Current players name: " + controller.getCurrentPlayerName)
-    println("Current players status: " + controller.getCurrentPlayerStatus)
-    println("Number of cards in deck: " + controller.getNumberOfCardsInDeck)
-    println
-    println("Current players cards: " + controller.getCurrentPlayersCardsString)
-    println
-    println("Current attacks on the table: " + controller.getAttacksOnTableString)
-    println
-    println("Please enter a command: ")
-    println("suit,rank - Play a card to start an attack")
-    println("suit,rank,numberOfAttack - Play a card to defend an attack")
-    println("e - End turn")
-    println("s - Start next round")
-    println("u - Undo")
-    println("r - Redo")
-    println("q - Quit game")
+    logger.info(controller.getGameStatus)
+    logger.info(controller.getRoundStatus)
+    logger.info("Current players name: " + controller.getCurrentPlayerName)
+    logger.info("Current players status: " + controller.getCurrentPlayerStatus)
+    logger.info("Number of cards in deck: " + controller.getNumberOfCardsInDeck + "\n")
+
+    logger.info("Current players cards: " + controller.getCurrentPlayersCardsString + "\n")
+
+    logger.info("Current attacks on the table: " + controller.getAttacksOnTableString + "\n")
+
+    logger.info("Please enter a command: ")
+    logger.info("suit,rank - Play a card to start an attack")
+    logger.info("suit,rank,numberOfAttack - Play a card to defend an attack")
+    logger.info("e - End turn")
+    logger.info("s - Start next round")
+    logger.info("u - Undo")
+    logger.info("r - Redo")
+    logger.info("q - Quit game")
   }
 
   def processInputLine(input: String): Boolean = {

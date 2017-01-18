@@ -48,4 +48,4 @@ project/.sbtserver
 .sonar/
 
 # Application
-yourgame.log
+durak.log

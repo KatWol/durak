@@ -2,6 +2,7 @@ package de.htwg.se.durak
 
 import de.htwg.se.durak.aview.tui.Tui
 import de.htwg.se.durak.controller.impl.GameRound
+import org.apache.log4j.PropertyConfigurator
 
 import scala.io.StdIn._
 import de.htwg.se.durak.aview.gui.SwingGui
@@ -12,6 +13,8 @@ import de.htwg.se.durak.controller.GameRoundControllerFactory
 object Durak {
   def main(args: Array[String]): Unit = {
 
+    PropertyConfigurator.configure("log4j.properties")
+    
     enterPlayerNames
 
     //val playerNames = processPlayerNamesInput(readLine())
