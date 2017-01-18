@@ -39,6 +39,8 @@ case class Deck(override val startWith: Rank) extends DeckTrait {
   //Suit der letzten Karte wird zurückgegeben, macht erst Sinn, nachdem defineTrumpCard aufgerufen wurde
   override def getTrumpSuit: Suit = cards(cards.size - 1).suit
 
+  override def getLastCardOfDeck: Card = cards(cards.size - 1)
+
   override def toXml: scala.xml.Node = {
     <deck>{ cards.map(c => c.toXml) }</deck>
   }

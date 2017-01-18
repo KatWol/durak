@@ -8,6 +8,11 @@ import de.htwg.se.durak.model.Rank
 
 trait GameRoundController extends Observable {
   /**
+   * Adds the Subscriber to the round
+   */
+  def addSubscriberToRound(s: Observer)
+
+  /**
    * All actions to start a new game round are performed
    */
   def updateGameRound
@@ -28,11 +33,6 @@ trait GameRoundController extends Observable {
   def endTurn
 
   /**
-   * Adds the Subscriber to the round
-   */
-  def addSubscriberToRound(s: Observer)
-
-  /**
    * If possible, undoes the last action
    */
   def undo
@@ -43,21 +43,55 @@ trait GameRoundController extends Observable {
   def redo
 
   //**** Methoden um den aktuellen Status anzuzeigen ***
+
+  /**
+   * Returns the game status as a string
+   */
   def getGameStatus: String
+
+  /**
+   * Returns the round status as a string
+   */
   def getRoundStatus: String
+
+  /**
+   * Returns the name of the current player
+   */
   def getCurrentPlayerName: String
+
+  /**
+   * Returns the status of the current player
+   */
   def getCurrentPlayerStatus: String
+
+  /**
+   * Returns the number of cards left in the deck
+   */
   def getNumberOfCardsInDeck: String
+
   /**
    * Returns a formated string of the cards of the current player
    */
   def getCurrentPlayersCardsString: String //Für Tui
+
+  /**
+   * Returns the cards of the current player
+   */
   def getCurrentPlayersCards: List[Card] //Für Gui
   /**
    * Returns a formated string of the attacks on the table
    */
   def getAttacksOnTableString: String //Für Tui
+
+  /**
+   * Returns the attacks on the table
+   */
   def getAttacksOnTable: List[Attack] //Für Gui
+
+  /**
+   * Returns the last card from the deck that defines the trump colour
+   */
+  def getLastCardFromDeck: Card
 }
 
 trait GameRoundControllerFactory {

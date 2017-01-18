@@ -8,6 +8,7 @@ trait Deck {
   def getCards: List[Card]
   def toString: String
   def defineTrumpCard: Deck
+  def getLastCardOfDeck: Card
   def getTrumpSuit: Suit
   def toXml: scala.xml.Node
 }

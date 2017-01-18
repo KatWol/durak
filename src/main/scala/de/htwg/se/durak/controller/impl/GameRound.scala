@@ -32,6 +32,7 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
   //3. Trump-Card wird definiert (--> d.h. gezogen, nach hintengeschoben und "aufgedeckt") und isTrump wird für alle Karten gesetzt
   deck = deck.defineTrumpCard
   val trumpSuit = deck.getTrumpSuit
+  val trumpCard = deck.getLastCardOfDeck
   //4. nachdem Trump-Suit feststeht, wird Trumpffarbe der Karten der Speiler aktualisiert
   activePlayers = for (player <- this.activePlayers) yield { player.setTrumpSuit(deck.getTrumpSuit) }
   //5. Pro Spieler wird kleinste TrumpCard ermittelt, Spielerstatus gesetzt und Startspieler bestimmt
@@ -89,6 +90,7 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
   override def getCurrentPlayersCards = round.getCurrentPlayer.cards
   override def getAttacksOnTableString = round.getAttacksOnTableString
   override def getAttacksOnTable = round.attacks
+  override def getLastCardFromDeck = trumpCard
 
   //******************************* Sonstige Methoden ***********************
   def changeState(state: GameState) = this.state = state;

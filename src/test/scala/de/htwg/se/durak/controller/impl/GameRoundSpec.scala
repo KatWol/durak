@@ -77,6 +77,7 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.getAttacksOnTableString should be("")
       game.getCurrentPlayersCardsString shouldBe a[String]
       game.getCurrentPlayersCards shouldBe a[List[_]]
+      game.getLastCardFromDeck.isTrump should be(true)
     }
 
     var defenderName = game.round.getDefender.name
