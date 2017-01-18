@@ -13,6 +13,7 @@ import de.htwg.se.util.Observer
 
 class SwingGui(var controller: GameRoundController) extends Frame with Observer {
   final val myFont = new Font("Arial", 0, 25)
+  final val path = "img/"
   var numberOfAttack: Int = -1
 
   controller.add(this)
@@ -93,7 +94,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
       for (attack <- controller.getAttacksOnTable) {
         contents += new BoxPanel(Orientation.Vertical) {
           contents += new Label {
-            icon = new ImageIcon("D:/Diverses/durak/karten/" + attack.attackingCard.suit + attack.attackingCard.rank + ".jpg")
+            icon = new ImageIcon(path + attack.attackingCard.suit + attack.attackingCard.rank + ".jpg")
             listenTo(mouse.clicks)
             reactions += {
               case _: event.MouseClicked => {
@@ -105,7 +106,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
           }
           contents += new Label {
             if (attack.defendingCard != null) {
-              icon = new ImageIcon("D:/Diverses/durak/karten/" + attack.defendingCard.suit + attack.defendingCard.rank + ".jpg")
+              icon = new ImageIcon(path + attack.defendingCard.suit + attack.defendingCard.rank + ".jpg")
             }
           }
 
@@ -125,7 +126,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
     for (card <- controller.getCurrentPlayersCards) {
       contents += new BoxPanel(Orientation.Vertical) {
         contents += new Label {
-          icon = new ImageIcon("D:/Diverses/durak/karten/" + card.suit + card.rank + ".jpg")
+          icon = new ImageIcon(path + card.suit + card.rank + ".jpg")
           listenTo(mouse.clicks)
           reactions += {
             case _: event.MouseClicked => {
