@@ -64,5 +64,11 @@ class RankSpec extends WordSpec with Matchers {
       Rank.Ace.toString should be("ace")
       Rank.Two.toString should be("two")
     }
+
+    "be parse from a string" in {
+      Rank.parseFromString("six") should be(Rank.Six)
+      Rank.parseFromString("Five") should be(Rank.Five)
+      Rank.parseFromString("4") should be(Rank.Four)
+    }
   }
 }

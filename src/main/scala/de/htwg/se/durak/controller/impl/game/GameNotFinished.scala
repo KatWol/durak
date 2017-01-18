@@ -15,7 +15,7 @@ class GameNotFinished extends GameState {
           game.statusLine = "A new round has started"
           if (isGameRoundFinished(game)) {
             game.changeState(new GameFinished)
-            game.statusLine = "The game round is finished. \n******Durak: " + getDurak(game) + "\nStart a new game by entering r"
+            game.statusLine = "The game round is finished. \n******Durak: " + getDurak(game) + "\nStart a new game by entering s"
           }
         }
     }

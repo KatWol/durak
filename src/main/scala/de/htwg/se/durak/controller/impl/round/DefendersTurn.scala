@@ -27,11 +27,11 @@ class DefendersTurn extends RoundNotFinished {
       else changeState(round, new FirstAttackersTurn)
     } else if (!round.allAttacksDefended) {
       changeState(round, new RoundFinished)
-      round.statusLine = "The round is finished and the defender has lost the round. Start a new round by entering r"
+      round.statusLine = "The round is finished and the defender has lost the round. Start a new round by entering s"
     } else {
       round.defenderWon = true
       changeState(round, new RoundFinished)
-      round.statusLine = "The round is finished and the defender has won the round. Start a new round by entering r"
+      round.statusLine = "The round is finished and the defender has won the round. Start a new round by entering s"
     }
     round.commandManager = round.commandManager.reset
     round.notifyObservers

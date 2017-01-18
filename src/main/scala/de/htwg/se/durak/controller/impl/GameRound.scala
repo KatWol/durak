@@ -1,25 +1,23 @@
 package de.htwg.se.durak.controller.impl
 
+import com.google.inject.Guice
+
+import de.htwg.se.durak.DurakModule
 import de.htwg.se.durak.controller.GameRoundController
+import de.htwg.se.durak.controller.GameRoundControllerFactory
 import de.htwg.se.durak.controller.impl.game.GameNotFinished
 import de.htwg.se.durak.controller.impl.game.GameState
 import de.htwg.se.durak.model.Card
 import de.htwg.se.durak.model.Deck
+import de.htwg.se.durak.model.DeckFactory
 import de.htwg.se.durak.model.Player
+import de.htwg.se.durak.model.PlayerFactory
 import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.model.Rank
 import de.htwg.se.util.Observer
-import com.google.inject.Inject
-import com.google.inject.Guice
-import de.htwg.se.durak.DurakModule
-import de.htwg.se.durak.model.DeckFactory
-import de.htwg.se.durak.model.PlayerFactory
-import de.htwg.se.durak.controller.GameRoundControllerFactory
 
-class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends GameRoundController {
+class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob"), val startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends GameRoundController {
   val injector = Guice.createInjector(new DurakModule())
-
-  val startRank = startWithRank //Um auf den Wert in GameFinished zugreifen zu können
   //*********** BEGINN KONSTRUKTOR ***********
 
   //1. Deck wird beginnend ab Rank startWithRank instanziert mit gemischten Karten
@@ -111,7 +109,7 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
     val players: List[Player] = for (player <- allPlayers) yield {
       val temp = newDeck.drawNCards(6)
       newDeck = temp._2
-      player.takeCards(temp._1)
+      player.setCards(temp._1)
     }
     (players, newDeck)
   }
@@ -120,7 +118,9 @@ class GameRound(playerNames: List[String] = List[String]("Kathrin", "Jakob"), st
     //1. Spieler werden durchlaufen und ein Tuple2 mit Index des Spielers und kleinster Trumpfkarte erstellt
     //2. Über .minBy(_._2) wird der Tuple2 mit kleinster Trumpfkarte ermittelt
     //3. Von dem ermittelten Tuple2 wird die erste Komponente, welche den Index des Spielers enthält zurückgegeben
-    ((for (i <- 0 to (activePlayers.size - 1); if activePlayers(i).getSmallestTrumpCard != null) yield Tuple2(i, activePlayers(i).getSmallestTrumpCard)).minBy(_._2))._1
+    val temp: IndexedSeq[Tuple2[Int, Card]] = for (i <- 0 to (activePlayers.size - 1); if activePlayers(i).getSmallestTrumpCard != null) yield { Tuple2(i, activePlayers(i).getSmallestTrumpCard) }
+    if (!temp.isEmpty) (temp.minBy(_._2))._1
+    else 0
   }
 
   //Rückgabe einer Liste mit Player mit der Startaufstellung für Beginn-Strategie "Kleinster Trumpf"
