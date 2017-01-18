@@ -1,13 +1,16 @@
 package de.htwg.se.durak.controller.impl
 
-import de.htwg.se.durak.controller.impl.round.AttackersTurn
+import com.google.inject.Guice
+
+import de.htwg.se.durak.DurakModule
 import de.htwg.se.durak.controller.impl.round.DefendersTurn
+import de.htwg.se.durak.controller.impl.round.FirstAttackersTurn
 import de.htwg.se.durak.model.Attack
+import de.htwg.se.durak.model.AttackFactory
 import de.htwg.se.durak.model.Card
 import de.htwg.se.util.Command
-import com.google.inject.Guice
-import de.htwg.se.durak.DurakModule
-import de.htwg.se.durak.model.AttackFactory
+import de.htwg.se.durak.controller.impl.round.SecondAttackersTurn
+import de.htwg.se.durak.controller.impl.round.FirstAttackersFirstTurn
 
 class PutDownCardCommand(round: Round, card: Card, attack: Attack = null) extends Command {
   val injector = Guice.createInjector(new DurakModule())
@@ -15,7 +18,7 @@ class PutDownCardCommand(round: Round, card: Card, attack: Attack = null) extend
 
   override def execute = {
     round.state match {
-      case a: AttackersTurn => {
+      case _: FirstAttackersTurn | _: FirstAttackersFirstTurn | _: SecondAttackersTurn => {
         round.updatePlayer(round.getCurrentPlayer, round.getCurrentPlayer.putDownCard(card))
         round.statusLine = round.getCurrentPlayer.name + " played the card " + card
         round.attacks = (attackFactory.create(card)) :: round.attacks
@@ -36,7 +39,7 @@ class PutDownCardCommand(round: Round, card: Card, attack: Attack = null) extend
 
     //Karte aus Attack entfernen oder Attack entfernen
     round.state match {
-      case a: AttackersTurn => round.attacks = round.attacks.filter(a => a != attackFactory.create(card))
+      case _: FirstAttackersTurn | _: FirstAttackersFirstTurn | _: SecondAttackersTurn => round.attacks = round.attacks.filter(a => a != attackFactory.create(card))
       case d: DefendersTurn => {
         val oldAttack = round.attacks.filter(a => a.defendingCard == card).head
         val attack = oldAttack.resetDefendingCard

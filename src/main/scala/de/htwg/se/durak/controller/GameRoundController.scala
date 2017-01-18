@@ -13,11 +13,6 @@ trait GameRoundController extends Observable {
   def addSubscriberToRound(s: Observer)
 
   /**
-   * All actions to start a new game round are performed
-   */
-  def updateGameRound
-
-  /**
    * Takes card from the current player and adds it to the given attack if the player is an attacker
    * or a new attack if the player is a defender
    *
@@ -92,6 +87,16 @@ trait GameRoundController extends Observable {
    * Returns the last card from the deck that defines the trump colour
    */
   def getLastCardFromDeck: Card
+
+  /**
+   * Returns the name of the durak when a game is finished
+   */
+  def getDurakName: String
+
+  /**
+   * Returns whether the defender won in the last round
+   */
+  def getDefenderLost: Boolean
 }
 
 trait GameRoundControllerFactory {

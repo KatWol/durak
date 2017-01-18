@@ -5,16 +5,19 @@ import com.google.inject.Inject
 import de.htwg.se.durak.controller.GameRoundController
 import de.htwg.se.util.Observer
 import org.apache.log4j.Logger
+import scala.swing.event.Event
 
 class Tui(var controller: GameRoundController) extends Observer {
   controller.add(this)
-  controller.addSubscriberToRound(this)
   val logger: Logger = Logger.getLogger("de.htwg.se.durak.aview.tui")
 
   override def update = printTui
+  override def update(e: Event) = {
+    logger.info(controller.getGameStatus)
+    printTui
+  }
 
   def printTui = {
-    logger.info(controller.getGameStatus)
     logger.info(controller.getRoundStatus)
     logger.info("Current players name: " + controller.getCurrentPlayerName)
     logger.info("Current players status: " + controller.getCurrentPlayerStatus)
@@ -28,7 +31,6 @@ class Tui(var controller: GameRoundController) extends Observer {
     logger.info("suit,rank - Play a card to start an attack")
     logger.info("suit,rank,numberOfAttack - Play a card to defend an attack")
     logger.info("e - End turn")
-    logger.info("s - Start next round")
     logger.info("u - Undo")
     logger.info("r - Redo")
     logger.info("q - Quit game")
@@ -39,7 +41,6 @@ class Tui(var controller: GameRoundController) extends Observer {
     input match {
       case "q" => continue = false
       case "e" => controller.endTurn
-      case "s" => controller.updateGameRound
       case "u" => controller.undo
       case "r" => controller.redo
       case _ => {

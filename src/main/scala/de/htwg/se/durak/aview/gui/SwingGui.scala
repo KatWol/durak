@@ -10,14 +10,16 @@ import javax.swing.ImageIcon
 
 import de.htwg.se.durak.controller.GameRoundController
 import de.htwg.se.util.Observer
+import scala.swing.event.Event
+import de.htwg.se.durak.controller.impl.RoundFinishedEvent
+import de.htwg.se.durak.controller.impl.GameRoundFinishedEvent
 
 class SwingGui(var controller: GameRoundController) extends Frame with Observer {
-  final val myFont = new Font("Arial", 0, 25)
+  final val myFont = new Font("Arial", 0, 12)
   final val path = "img/"
   var numberOfAttack: Int = -1
 
   controller.add(this)
-  controller.addSubscriberToRound(this)
 
   title = "Durak"
 
@@ -153,13 +155,6 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
       }
       font = myFont
     }
-    contents += new Button() {
-      action = Action("Next round") {
-        controller.updateGameRound
-        numberOfAttack = -1
-      }
-      font = myFont
-    }
   }
 
   def redraw = {
@@ -170,5 +165,24 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
   override def update = {
     redraw
   }
+
+  override def update(e: Event) = {
+    e match {
+      case roundFinished: RoundFinishedEvent => {
+        var defenderLost: String = ""
+        if (controller.getDefenderLost) defenderLost = "won"
+        else defenderLost = "lost"
+        showDialog("Round finished", "This round is finished. The defender " + defenderLost + " the last round.")
+        redraw
+      }
+
+      case gameFinished: GameRoundFinishedEvent => {
+        showDialog("Game finished", "The Durak is " + controller.getDurakName)
+        redraw
+      }
+    }
+  }
+
+  def showDialog(title: String, message: String) = Dialog.showMessage(playerPanel, message, title)
 
 }

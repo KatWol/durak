@@ -55,12 +55,12 @@ class RoundSpec extends WordSpec with Matchers {
 
   var player1 = playerFactory.create("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6)).setStatus(PlayerStatus.Attacker).setTurn(true)
   var player2 = playerFactory.create("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
-  var round = new Round(deckFactory.create(Rank.Seven), List[Player](player1, player2), Suit.Hearts, Vector())
+  var round = new Round(deckFactory.create(Rank.Seven), List[Player](player1, player2), Suit.Hearts)
 
   def resetRound() = {
     player1 = playerFactory.create("Jakob", 0, List[Card](card1, card2, card3, card4, card5, card6)).setStatus(PlayerStatus.Attacker).setTurn(true)
     player2 = playerFactory.create("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
-    round = new Round(deckFactory.create(Rank.Seven), List[Player](player1, player2), Suit.Hearts, Vector())
+    round = new Round(deckFactory.create(Rank.Seven), List[Player](player1, player2), Suit.Hearts)
   }
 
   "A Round with 2 players" when {
@@ -130,7 +130,7 @@ class RoundSpec extends WordSpec with Matchers {
         round.attacks.contains(attackFactory.create(card5)) should be(true)
 
         round.endTurn //Attacker
-        round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
+        round.statusLine should be("Jakob's turn is finished. It is Kathrin's turn")
 
         player1 = round.players(0)
         player2 = round.players(1)
@@ -168,25 +168,17 @@ class RoundSpec extends WordSpec with Matchers {
         round.allAttacksDefended should be(false)
 
         round.playCard(card9, attackFactory.create(card5)) //Defender
-        round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card9)
+        round.statusLine should be("Kathrin's turn is finished. It is Jakob's turn")
 
         round.attacks.contains(attackFactory.create(card5, card9)) should be(true)
         player2 = round.getCurrentPlayer()
-        player2.name should be("Kathrin")
-        player2.cards.contains(card9) should be(false)
+        player2.name should be("Jakob")
 
         round.allAttacksDefended should be(true)
       }
 
-      /*"not update player status if round is not finished yet" in {
-        val players = round.players
-        round.setupForNextRound
-        round.players should be(players)
-      }*/
-
       "continue the defenders round until the defender ends his round" in {
-        round.endTurn //Defender
-        round.statusLine should be("Kathrin's round is finished. It is Jakob's turn")
+        round.statusLine should be("Kathrin's turn is finished. It is Jakob's turn")
 
         player1 = round.getCurrentPlayer
         player1.name should be("Jakob")
@@ -210,75 +202,43 @@ class RoundSpec extends WordSpec with Matchers {
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card1)
 
         round.endTurn //Attacker
-        round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
+        round.statusLine should be("Jakob's turn is finished. It is Kathrin's turn")
 
         round.playCard(card7, attackFactory.create(card1)) //Defender
-        round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card7)
 
-        round.endTurn //Defender
-        round.statusLine should be("Kathrin's round is finished. It is Jakob's turn")
+        round.statusLine should be("Kathrin's turn is finished. It is Jakob's turn")
 
-        round.playCard(card4) //Defender
+        round.playCard(card4) //Attacker
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card4)
 
         round.endTurn //Attacker
-        round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
+        round.statusLine should be("Jakob's turn is finished. It is Kathrin's turn")
 
-        println(round.getCurrentPlayer.cards)
         round.playCard(card10, attackFactory.create(card4)) //Defender
-        round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card10)
 
-        round.endTurn //Defender
-        round.statusLine should be("Kathrin's round is finished. It is Jakob's turn")
+        round.statusLine should be("Kathrin's turn is finished. It is Jakob's turn")
 
         round.playCard(card6) //Attacker
         round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card6)
 
         round.endTurn //Attacker
-        round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
+        round.statusLine should be("Jakob's turn is finished. It is Kathrin's turn")
 
         round.playCard(card11, attackFactory.create(card6)) //Defender
-        round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card11)
 
-        round.endTurn //Defender
-        round.statusLine should be("Kathrin's round is finished. It is Jakob's turn")
+        round.statusLine should be("Kathrin's turn is finished. It is Jakob's turn")
 
         round.playCard(card3) //Attacker
-        round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card3)
-
-        round.endTurn //Attacker
-        round.statusLine should be("Jakob's round is finished. It is Kathrin's turn")
+        round.statusLine should be("Jakob played the card " + card3 + ". The maximum number of attacks is reached and it is the defenders turn")
 
         round.playCard(card12, attackFactory.create(card3)) //Defender
-        round.statusLine should be(round.getCurrentPlayer.name + " played the card " + card12)
 
-        round.endTurn //Defender
-        round.statusLine should be("The round is finished and the defender has won the round. Start a new round by entering s")
       }
 
       "change to state RoundFinished when maximum number of attacks are reached" in {
         round.state shouldBe a[RoundFinished]
         round.defenderWon should be(true)
       }
-
-      /*"set correct player statuses for the next round after the round is finished" in {
-        round.setupForNextRound
-        player1 = round.players(0)
-        player1.name should be("Jakob")
-        player1.status should be(PlayerStatus.Defender)
-        player1.hisTurn should be(false)
-
-        player2 = round.players(1)
-        player2.name should be("Kathrin")
-        player2.status should be(PlayerStatus.Attacker)
-        player2.hisTurn should be(true)
-      }
-
-      "give all the players the correct cards after the round is finished" in {
-        round.players(0).cards should be(List[Card](card13, card14, card15, card16, card17, card18))
-        round.players(1).cards should be(List[Card](card19, card20, card21, card22, card23, card24))
-        round.deck should be(Deck(List[Card]()))
-      }*/
 
     }
 
@@ -295,22 +255,6 @@ class RoundSpec extends WordSpec with Matchers {
 
       }
 
-      /*"set correct player statuses for the next round after the round is finished" in {
-        round.setupForNextRound
-        player1 = round.players.filter(_.name == "Jakob")(0)
-        player2 = round.players.filter(_.name == "Kathrin")(0)
-
-        player1.hisTurn should be(true)
-        player1.status should be(PlayerStatus.Attacker)
-
-        player2.hisTurn should be(false)
-        player2.status should be(PlayerStatus.Defender)
-      }*/
-
-      /*"give all the players the correct cards after the round is finished" in {
-        player1.cards should be(List[Card](card13, card14, card1, card3, card4, card6))
-        player2.cards should be(List[Card](card5, card2, card8, card7, card9, card10, card11, card12))
-      }*/
     }
 
     "the attacking player misses a turn" should {
@@ -325,22 +269,6 @@ class RoundSpec extends WordSpec with Matchers {
         round.state shouldBe a[RoundFinished]
       }
 
-      /*"set correct player statuses for the next round after the round is finished" in {
-        round.setupForNextRound
-        player1 = round.players.filter(_.name == "Jakob")(0)
-        player2 = round.players.filter(_.name == "Kathrin")(0)
-
-        player1.hisTurn should be(false)
-        player1.status should be(PlayerStatus.Defender)
-
-        player2.hisTurn should be(true)
-        player2.status should be(PlayerStatus.Attacker)
-      }
-
-      "give all the players the correct cards after the round is finished" in {
-        player1.cards should be(List[Card](card13, card1, card3, card4, card5, card6))
-        player2.cards should be(List[Card](card14, card7, card9, card10, card11, card12))
-      }*/
     }
   }
 
@@ -377,12 +305,12 @@ class RoundSpec extends WordSpec with Matchers {
   var player3a = playerFactory.create("David", 2, List(card13a, card14a, card15a, card16a, card17a, card18a)).setStatus(PlayerStatus.Attacker)
   var player4a = playerFactory.create("Thomas", 3, List(card19a, card20a, card21a, card22a, card23a, card24a))
 
-  var rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
+  var rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts)
 
   "A Round with 4 Players" should {
     "when no player misses a turn that ends the round" should {
-      "start in the FirstAttackersTurn state" in {
-        rounda.state shouldBe a[FirstAttackersTurn]
+      "start in the FirstAttackersFirstTurn state" in {
+        rounda.state shouldBe a[FirstAttackersFirstTurn]
       }
 
       "return the current player" in {
@@ -411,8 +339,6 @@ class RoundSpec extends WordSpec with Matchers {
 
       "continue with defending player defending that attack until the player ends his turn" in {
         rounda.playCard(card7a, attackFactory.create(card1a)) //Defender
-
-        rounda.endTurn //Defender
         rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
         rounda.players.filter(_.number == 1)(0).hisTurn should be(false)
         rounda.players.filter(_.number == 2)(0).hisTurn should be(true)
@@ -424,12 +350,17 @@ class RoundSpec extends WordSpec with Matchers {
       }
 
       "continue with the second attacker playing cards until the player ends his turn" in {
+        rounda.playCard(card14a)
+        rounda.statusLine should be("The rank of this card is not on the table yet")
+
         rounda.playCard(card13a) //2. Attacker
         rounda.endTurn //2. Attacker
         rounda.players.filter(_.number == 0)(0).hisTurn should be(true)
         rounda.players.filter(_.number == 1)(0).hisTurn should be(false)
         rounda.players.filter(_.number == 2)(0).hisTurn should be(false)
         rounda.players.filter(_.number == 3)(0).hisTurn should be(false)
+
+        rounda.state shouldBe a[FirstAttackersTurn]
       }
 
       "set turnMissed to true only if the second attacker misses a turn" in {
@@ -444,7 +375,6 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.state shouldBe a[DefendersTurn]
 
         rounda.playCard(card8a, attackFactory.create(card13a)) //Defender
-        rounda.endTurn //Defender
 
         rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
         rounda.players.filter(_.number == 1)(0).hisTurn should be(false)
@@ -467,7 +397,7 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.turnMissed should be(false)
       }
 
-      "end turn if an attacker starts more than the maximum number of attacks" in {
+      "end turn if the defender defends the maximum amount of attacks" in {
         rounda.playCard(card9a, attackFactory.create(card2a)) //Defender
         rounda.endTurn //Defender
 
@@ -477,7 +407,6 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.endTurn // 1. Attacker
 
         rounda.playCard(card10a, attackFactory.create(card14a)) //Defender
-        rounda.endTurn //Defender
 
         rounda.playCard(card15a) //2. Attacker
         rounda.endTurn //2. Attacker
@@ -485,20 +414,18 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.endTurn //1. Attacker
 
         rounda.playCard(card11a, attackFactory.create(card15a)) //Defender
-        rounda.endTurn //Defender
 
-        rounda.endTurn //2. Attacker
+        rounda.state shouldBe a[RoundFinished]
+      }
 
-        rounda.playCard(card3a) //1. Attacker
-        rounda.playCard(card6a) //1. Attacker
-
-        rounda.state shouldBe a[DefendersTurn]
+      "continue with the defenders turn if the maximum amounts of attacks are played" in {
 
         val cardA = cardFactory.create(Suit.Diamonds.toString, Rank.Seven.toString)
         val playerA = playerFactory.create("Kathrin", 0, List[Card](cardA, cardA, cardA, cardA, cardA, cardA)).setStatus(PlayerStatus.Attacker).setTurn(true)
-        val playerB = playerFactory.create("Kathrin", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
+        val playerB = playerFactory.create("David", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
+        val playerC = playerFactory.create("Jakob", 2, List[Card](cardA, cardA, cardA, cardA, cardA, cardA)).setStatus(PlayerStatus.Attacker)
 
-        val newRound = new Round(deckFactory.create(Rank.Seven), List[Player](playerA, playerB), Suit.Hearts, Vector())
+        val newRound = new Round(deckFactory.create(Rank.Seven), List[Player](playerA, playerB), Suit.Hearts)
 
         newRound.playCard(cardA)
         newRound.playCard(cardA)
@@ -509,6 +436,20 @@ class RoundSpec extends WordSpec with Matchers {
         newRound.playCard(cardA)
 
         newRound.state shouldBe a[DefendersTurn]
+
+        val newestRound = new Round(deckFactory.create(Rank.Seven), List[Player](playerA, playerB, playerC), Suit.Hearts)
+
+        newestRound.playCard(cardA)
+        newestRound.endTurn
+        newestRound.playCard(cardA)
+        newestRound.playCard(cardA)
+        newestRound.playCard(cardA)
+        newestRound.playCard(cardA)
+        newestRound.playCard(cardA)
+
+        newRound.state shouldBe a[DefendersTurn]
+        newRound.getCurrentPlayer.name should be("David")
+
       }
 
       "end when the maximum number of attacks is reached and all attacks are defended" in {
@@ -517,31 +458,11 @@ class RoundSpec extends WordSpec with Matchers {
 
         rounda.state shouldBe a[RoundFinished]
       }
-
-      /*"set correct player statuses for the next round after the round is finished" in {
-        rounda.setupForNextRound
-
-        rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 0)(0).status should be(PlayerStatus.Inactive)
-        rounda.players.filter(_.number == 1)(0).hisTurn should be(true)
-        rounda.players.filter(_.number == 1)(0).status should be(PlayerStatus.Attacker)
-        rounda.players.filter(_.number == 2)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 2)(0).status should be(PlayerStatus.Defender)
-        rounda.players.filter(_.number == 3)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 3)(0).status should be(PlayerStatus.Attacker)
-      }
-
-      "give all players the correct cards after a round is finished" in {
-        rounda.players.filter(_.number == 0).head.cards should be(List[Card](card13, card14, card15, card4a, card5a, card6a))
-        rounda.players.filter(_.number == 1).head.cards should be(List[Card](card19, card20, card21, card22, card23, card24))
-        rounda.players.filter(_.number == 2).head.cards should be(List[Card](card16, card17, card18, card16a, card17a, card18a))
-        rounda.players.filter(_.number == 3).head.cards should be(List[Card](card19a, card20a, card21a, card22a, card23a, card24a))
-      }*/
     }
 
     "both attackers miss a turn in the same round" should {
       "end if both attackers miss a turn in the same round" in {
-        rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
+        rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts)
         rounda.playCard(card1a) //1. Attacker
         rounda.endTurn //1. Attacker
         rounda.playCard(card7a, attackFactory.create(card1a)) //Defender
@@ -552,30 +473,11 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.state shouldBe a[RoundFinished]
       }
 
-      /*"set correct player statuses for the next round after the round is finished" in {
-        rounda.setupForNextRound
-
-        rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 0)(0).status should be(PlayerStatus.Inactive)
-        rounda.players.filter(_.number == 1)(0).hisTurn should be(true)
-        rounda.players.filter(_.number == 1)(0).status should be(PlayerStatus.Attacker)
-        rounda.players.filter(_.number == 2)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 2)(0).status should be(PlayerStatus.Defender)
-        rounda.players.filter(_.number == 3)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 3)(0).status should be(PlayerStatus.Attacker)
-      }
-
-      "give all players the correct cards after a round is finished" in {
-        rounda.players.filter(_.number == 0).head.cards should be(List[Card](card13, card2a, card3a, card4a, card5a, card6a))
-        rounda.players.filter(_.number == 1).head.cards should be(List[Card](card14, card8a, card9a, card10a, card11a, card12a))
-        rounda.players.filter(_.number == 2).head.cards should be(List[Card](card13a, card14a, card15a, card16a, card17a, card18a))
-        rounda.players.filter(_.number == 3).head.cards should be(List[Card](card19a, card20a, card21a, card22a, card23a, card24a))
-      }*/
     }
 
     "the defender misses a turn" should {
       "end when the defender misses a turn" in {
-        rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts, Vector())
+        rounda = new Round(deckFactory.create(Rank.Seven), List(player1a, player2a, player3a, player4a), Suit.Hearts)
         rounda.playCard(card1a) //1. Attacker
         rounda.endTurn //1. Attacker
 
@@ -594,24 +496,6 @@ class RoundSpec extends WordSpec with Matchers {
         rounda.statusLine should be("The round is finished. Start a new round by entering s")
       }
 
-      /*"set correct player statuses for the next round after the round is finished" in {
-        rounda.setupForNextRound
-        rounda.players.filter(_.number == 0)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 0)(0).status should be(PlayerStatus.Attacker)
-        rounda.players.filter(_.number == 1)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 1)(0).status should be(PlayerStatus.Inactive)
-        rounda.players.filter(_.number == 2)(0).hisTurn should be(true)
-        rounda.players.filter(_.number == 2)(0).status should be(PlayerStatus.Attacker)
-        rounda.players.filter(_.number == 3)(0).hisTurn should be(false)
-        rounda.players.filter(_.number == 3)(0).status should be(PlayerStatus.Defender)
-      }
-
-      "give all players the correct cards after a round is finished" in {
-        rounda.players.filter(_.number == 0).head.cards should be(List[Card](card13, card2a, card3a, card4a, card5a, card6a))
-        rounda.players.filter(_.number == 1).head.cards should be(List[Card](card1a, card7a, card8a, card9a, card10a, card11a, card12a))
-        rounda.players.filter(_.number == 2).head.cards should be(List[Card](card13a, card14a, card15a, card16a, card17a, card18a))
-        rounda.players.filter(_.number == 3).head.cards should be(List[Card](card19a, card20a, card21a, card22a, card23a, card24a))
-      }*/
     }
   }
 }

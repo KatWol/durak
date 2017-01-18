@@ -1,22 +1,26 @@
 package de.htwg.se.durak.controller.impl
 
-import com.google.inject.Guice
+import scala.swing.event.Event
 
+import com.google.inject.Guice
+import de.htwg.se.durak.controller.impl.round.RoundNotFinished
+import de.htwg.se.durak.controller.GameRoundControllerFactory
 import de.htwg.se.durak.DurakModule
 import de.htwg.se.durak.controller.GameRoundController
-import de.htwg.se.durak.controller.GameRoundControllerFactory
-import de.htwg.se.durak.controller.impl.game.GameNotFinished
-import de.htwg.se.durak.controller.impl.game.GameState
-import de.htwg.se.durak.model.Card
-import de.htwg.se.durak.model.Deck
-import de.htwg.se.durak.model.DeckFactory
 import de.htwg.se.durak.model.Player
+import de.htwg.se.durak.model.Card
+import de.htwg.se.durak.model.Rank
+import de.htwg.se.durak.model.Deck
+import de.htwg.se.util.Observer
 import de.htwg.se.durak.model.PlayerFactory
 import de.htwg.se.durak.model.PlayerStatus
-import de.htwg.se.durak.model.Rank
-import de.htwg.se.util.Observer
+import de.htwg.se.durak.model.DeckFactory
+import de.htwg.se.durak.controller.impl.round.RoundFinished
 
-class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob"), val startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends GameRoundController {
+case class RoundFinishedEvent() extends Event
+case class GameRoundFinishedEvent() extends Event
+
+class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob"), val startWithRank: Rank = Rank.Seven, startWithSmallestTrump: Boolean = true) extends GameRoundController with Observer {
   val injector = Guice.createInjector(new DurakModule())
   //*********** BEGINN KONSTRUKTOR ***********
 
@@ -31,28 +35,102 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
   var activePlayers = temp._1
   //3. Trump-Card wird definiert (--> d.h. gezogen, nach hintengeschoben und "aufgedeckt") und isTrump wird für alle Karten gesetzt
   deck = deck.defineTrumpCard
-  val trumpSuit = deck.getTrumpSuit
-  val trumpCard = deck.getLastCardOfDeck
+  var trumpSuit = deck.getTrumpSuit
+  var trumpCard = deck.getLastCardOfDeck
   //4. nachdem Trump-Suit feststeht, wird Trumpffarbe der Karten der Speiler aktualisiert
   activePlayers = for (player <- this.activePlayers) yield { player.setTrumpSuit(deck.getTrumpSuit) }
   //5. Pro Spieler wird kleinste TrumpCard ermittelt, Spielerstatus gesetzt und Startspieler bestimmt
   activePlayers = setPlayerStatusForNextRound(getPlayerWithSmallestTrumpCard)
-
-  //6. Status des Spiels wird gesetzt
-  var state: GameState = new GameNotFinished
-  //7. Runde wird gestartet 
-  var round = new Round(this.deck, this.activePlayers, this.trumpSuit, subscribers)
+  //6. Runde wird gestartet 
+  var round = new Round(this.deck, this.activePlayers, this.trumpSuit)
+  round.add(this)
 
   //*********** ENDE KONSTRUKTOR ***********
 
   var statusLine = "Start of a new game"
+  var durakLastGameRound: String = ""
+  var defenderLostLastRound: Boolean = true
 
-  //*********** Methoden die auf den StateObjekten aufgerufen werden *********
+  def updateRound = {
+    round.state match {
+      case notFinished: RoundNotFinished => {
+        statusLine = "The round is not finished"
+        notifyObservers
+      }
+      case finished: RoundFinished =>
+        {
+          setupForNextRound
+          statusLine = "A new round has started"
+          if (isGameRoundFinished) {
+            statusLine = "The game round is finished. \n******Durak: " + activePlayers(0).name + "\nStarting a new game round."
+            durakLastGameRound = activePlayers(0).name
+            startNewGameRound
+            notifyObservers(new GameRoundFinishedEvent)
+          } else {
+            notifyObservers(new RoundFinishedEvent)
+          }
+        }
+    }
+  }
 
-  //Führt alle notwendigen Aktionen des aktuellen Status aus und gibt dann einen boolschen Wert zurück, ob etwas geändert wurde
-  override def updateGameRound = state.updateState(this)
+  def setupForNextRound = {
+    defenderLostLastRound = round.defenderWon
+    dealCards
+    deck = round.deck
+    activePlayers = round.players
+    removeFinishedPlayers
+    val indexOfDefender = round.getIndexOfPlayer(round.getDefender)
+    if (round.defenderWon) activePlayers = setPlayerStatusForNextRound(indexOfDefender)
+    else activePlayers = setPlayerStatusForNextRound(indexOfDefender + 1)
 
-  //*********** Implementierung des Traits
+    round = new Round(deck, activePlayers, trumpSuit)
+    round.add(this)
+  }
+
+  def dealCards: Unit = {
+    round.drawNCards(round.getFirstAttacker, Math.max(6 - round.getFirstAttacker.numberOfCards, 0))
+    if (round.getSecondAttacker != null) round.drawNCards(round.getSecondAttacker, Math.max(6 - round.getSecondAttacker.numberOfCards, 0))
+    if (round.defenderWon) round.drawNCards(round.getDefender, Math.max(6 - round.getDefender.numberOfCards, 0))
+    else pickUpAllCardsOnTable
+  }
+
+  //Defender gets all cards on the table
+  def pickUpAllCardsOnTable = round.updatePlayer(round.getDefender, round.getDefender.takeCards(round.getCardsOnTable))
+
+  //Removes all players without cards
+  def removeFinishedPlayers = activePlayers = for (player <- round.players; if player.numberOfCards > 0) yield player
+
+  def isGameRoundFinished: Boolean = {
+    if (deck.isEmpty && activePlayers.size < 2) true
+    else false
+  }
+
+  def startNewGameRound = {
+    deck = getDeck(startWithRank)
+    val indexNextStartPlayer = getNextStartPlayer
+    val temp = dealCards(allPlayers)
+    activePlayers = temp._1
+    deck = temp._2
+
+    deck = deck.defineTrumpCard
+    trumpSuit = deck.getTrumpSuit
+    trumpCard = deck.getLastCardOfDeck
+    //4. nachdem Trump-Suit feststeht, wird Trumpffarbe der Karten der Speiler aktualisiert
+    activePlayers = for (player <- this.activePlayers) yield { player.setTrumpSuit(deck.getTrumpSuit) }
+    activePlayers = setPlayerStatusForNextRound(indexNextStartPlayer)
+    round = new Round(deck, activePlayers, trumpSuit)
+    round.add(this)
+  }
+
+  def getNextStartPlayer: Int = {
+    val nextStartPlayer = getNextDefender - 1
+    if (nextStartPlayer >= 0) nextStartPlayer
+    else nextStartPlayer + allPlayers.size
+  }
+
+  def getNextDefender: Int = activePlayers(0).number
+
+  //*********** Implementierung des Traits ************************************************************
   override def playCard(suit: String, rank: String, attack: String) = round.playCard(suit, rank, attack)
   override def endTurn = round.endTurn
   override def addSubscriberToRound(s: Observer) = round.add(s)
@@ -63,7 +141,7 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
       case e: IllegalStateException => statusLine = e.getMessage
     }
 
-    notifyObservers
+    update
   }
   override def redo = {
     try {
@@ -71,17 +149,12 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
     } catch {
       case e: IllegalStateException => statusLine = e.getMessage
     }
-    notifyObservers
+    update
   }
 
   //**** Methoden um den aktuellen Stand in der View anzuzeigen *****
 
-  //Setzt den Status zu einem leeren String nachdem er zurück gegeben wurde
-  override def getGameStatus = {
-    val tempStatus = statusLine
-    statusLine = ""
-    tempStatus
-  }
+  override def getGameStatus = statusLine
   override def getRoundStatus = round.statusLine
   override def getCurrentPlayerName = round.getCurrentPlayer.name
   override def getCurrentPlayerStatus = round.getCurrentPlayer.status.toString
@@ -91,9 +164,11 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
   override def getAttacksOnTableString = round.getAttacksOnTableString
   override def getAttacksOnTable = round.attacks
   override def getLastCardFromDeck = trumpCard
+  //Macht nur Sinn, wenn die GameRound beendet wurde
+  override def getDurakName: String = durakLastGameRound
+  override def getDefenderLost: Boolean = defenderLostLastRound
 
   //******************************* Sonstige Methoden ***********************
-  def changeState(state: GameState) = this.state = state;
 
   def getDeck(startWithRank: Rank) = deckFactory.create(startWithRank)
 
@@ -106,7 +181,7 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
     }
   }
 
-  def dealCards(allPlayers: List[Player]) = {
+  def dealCards(allPlayers: List[Player]): Tuple2[List[Player], Deck] = {
     var newDeck = deck
     val players: List[Player] = for (player <- allPlayers) yield {
       val temp = newDeck.drawNCards(6)
@@ -135,8 +210,11 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
     }).toList
   }
 
+  override def update = notifyObservers
+  override def update(e: Event) = updateRound
+
 }
 
 class GameRoundFactory extends GameRoundControllerFactory {
-  override def create(playerNames: List[String], startWithRank: String = "seven", startWithSmallestTrump: Boolean = true): GameRound = new GameRound(playerNames, Rank.parseFromString(startWithRank), startWithSmallestTrump)
+  override def create(playerNames: List[String], startWithRank: String = "jack", startWithSmallestTrump: Boolean = true): GameRound = new GameRound(playerNames, Rank.parseFromString(startWithRank), startWithSmallestTrump)
 }

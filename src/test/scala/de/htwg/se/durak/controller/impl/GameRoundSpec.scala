@@ -4,17 +4,16 @@ import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
 import de.htwg.se.durak.aview.tui.Tui
-import de.htwg.se.durak.controller.impl.game.GameNotFinished
 import de.htwg.se.durak.model.Attack
 import de.htwg.se.durak.model.PlayerStatus
 import de.htwg.se.durak.model.Rank
 import de.htwg.se.durak.model.impl.Card
 import de.htwg.se.util.Observer
 import de.htwg.se.durak.controller.impl.round.RoundFinished
-import de.htwg.se.durak.controller.impl.game.GameFinished
 import com.google.inject.Guice
 import de.htwg.se.durak.DurakModule
 import de.htwg.se.durak.model.PlayerFactory
+import scala.swing.event.Event
 
 class GameRoundSpec extends WordSpec with Matchers {
   def getInactivePlayer(game: GameRound) = game.round.players.filter(_.status == PlayerStatus.Inactive).head
@@ -48,8 +47,6 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.activePlayers(2).cards.length should be(6)
 
       game.deck.numberOfCards should be(4)
-
-      game.state shouldBe a[GameNotFinished]
     }
 
     "set the first player as start player if no one has a trump card" in {
@@ -61,14 +58,8 @@ class GameRoundSpec extends WordSpec with Matchers {
       newGame.getPlayerWithSmallestTrumpCard should be(0)
     }
 
-    "not update state while round is not finished" in {
-      game.updateGameRound
-      game.state shouldBe a[GameNotFinished]
-      game.getGameStatus should be("The round is not finished")
-    }
-
     "return status information" in {
-      game.getGameStatus should be("")
+      game.getGameStatus should be("Start of a new game")
       game.getRoundStatus should be("Start of a new Round. It is " + game.round.getCurrentPlayer.name + "'s turn")
       game.playerNames.contains(game.getCurrentPlayerName) should be(true)
       game.getCurrentPlayerStatus should be("Attacker")
@@ -106,15 +97,9 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.redo
     }
 
-    "update values when round is finished" in {
-      game.endTurn
-      game.endTurn
-
-      game.state shouldBe a[GameNotFinished]
-    }
-
     "set correct values after finishing a round" in {
-      game.updateGameRound
+      game.endTurn
+      game.endTurn
       game.round.getFirstAttacker.name should be(secondAttackerName)
       game.round.getSecondAttacker.name should be(firstAttackerName)
       game.round.getDefender.name should be(inactiveName)
@@ -133,31 +118,22 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.round.playCard(card)
       game.endTurn
       game.endTurn
-      game.updateGameRound
 
       val secondCard = game.round.getCurrentPlayer.cards(0)
       game.round.playCard(secondCard)
       game.endTurn
       game.endTurn
-      game.updateGameRound
 
       val thirdCard = game.round.getCurrentPlayer.cards(0)
       game.round.playCard(thirdCard)
       game.endTurn
       game.endTurn
-      game.updateGameRound
+
       game.deck.numberOfCards should be(0)
 
       game.round.players = List(game.round.getDefender(), game.round.getFirstAttacker().setCards(List()))
       game.round.state = new RoundFinished
 
-      game.updateGameRound
-      game.state shouldBe a[GameFinished]
-    }
-
-    "start a new game round after the first one has ended" in {
-      game.updateGameRound
-      game.state shouldBe a[GameNotFinished]
     }
 
     "set correct player statuses for next round" in {
@@ -165,22 +141,18 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.round.playCard(game.round.getCurrentPlayer.cards(0))
       game.endTurn
       game.endTurn
-      game.updateGameRound
 
       game.round.playCard(game.round.getCurrentPlayer.cards(0))
       game.endTurn
       game.endTurn
-      game.updateGameRound
 
       game.round.playCard(game.round.getCurrentPlayer.cards(0))
       game.endTurn
       game.endTurn
-      game.updateGameRound
 
       game.round.playCard(game.round.getCurrentPlayer.cards(0))
       game.endTurn
       game.endTurn
-      game.updateGameRound
 
       game.deck.numberOfCards should be(0)
 
@@ -188,8 +160,6 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.round.defenderWon = true
       game.round.state = new RoundFinished
 
-      game.updateGameRound
-      game.state shouldBe a[GameFinished]
     }
 
     "should be created by a GameRoundFactory" in {
@@ -202,4 +172,5 @@ class GameRoundSpec extends WordSpec with Matchers {
 
 class DummyObserver(val key: String) extends Observer {
   def update(): Unit = {}
+  def update(e: Event): Unit = {}
 }

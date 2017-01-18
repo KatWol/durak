@@ -27,7 +27,7 @@ class PutDownCardCommandSpec extends WordSpec with Matchers {
     "throw an IllegalArgumentException if the defender plays a card he does not have" in {
 
       var players = List[Player](playerFactory.create("Kathrin", 0, List()).setStatus(PlayerStatus.Defender).setTurn(true), playerFactory.create("Jakob", 1, List()).setStatus(PlayerStatus.Attacker))
-      var round = new Round(deckFactory.create(Rank.Seven), players, Suit.Hearts, Vector())
+      var round = new Round(deckFactory.create(Rank.Seven), players, Suit.Hearts)
       round.state = new DefendersTurn
       val card = cardFactory.create("clubs", "nine")
       val attack = attackFactory.create(cardFactory.create("clubs", "seven"))
@@ -43,7 +43,7 @@ class PutDownCardCommandSpec extends WordSpec with Matchers {
       val card = cardFactory.create("clubs", "nine")
       var player1 = playerFactory.create("Kathrin", 0, List(card)).setStatus(PlayerStatus.Defender).setTurn(true)
       var players = List[Player](player1, playerFactory.create("Jakob", 1, List()).setStatus(PlayerStatus.Attacker))
-      var round = new Round(deckFactory.create(Rank.Seven), players, Suit.Hearts, Vector())
+      var round = new Round(deckFactory.create(Rank.Seven), players, Suit.Hearts)
       round.state = new DefendersTurn
       val attack = attackFactory.create(cardFactory.create("clubs", "seven"))
       round.attacks = List(attack)

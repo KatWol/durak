@@ -14,7 +14,7 @@ import de.htwg.se.durak.DurakModule
 
 //State ändern sich in der folgenden Reihenfolge:
 //FirstAttackersFirstTurn -> DefendersTurn -> SecondAttackersTurn -> FirstAttackersTurn -> DefendersTurn ... -> RoundFinished (und hier je nachdem RoundFinishedDefenderWon oder RoundFinishedDefenderLost)
-class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, observers: Vector[Observer]) extends Observable {
+class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit) extends Observable {
   val injector = Guice.createInjector(new DurakModule())
   private[controller] var state: RoundState = new FirstAttackersFirstTurn
   var attacks = List[Attack]()
@@ -22,7 +22,6 @@ class Round(var deck: Deck, var players: List[Player], val trumpSuit: Suit, obse
   var defenderWon = false
 
   var statusLine = "Start of a new Round. It is " + getCurrentPlayer.name + "'s turn"
-  subscribers = observers
   var commandManager = new CommandManager
 
   //**************Methoden, die von den State-Objekten ausgeführt werden********************
