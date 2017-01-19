@@ -15,25 +15,38 @@ import de.htwg.se.durak.controller.impl.RoundFinishedEvent
 import de.htwg.se.durak.controller.impl.GameRoundFinishedEvent
 
 class SwingGui(var controller: GameRoundController) extends Frame with Observer {
-  final val myFont = new Font("Arial", 0, 12)
+  final val myFont = new Font("Arial", 0, 25)
   final val path = "img/"
   var numberOfAttack: Int = -1
 
   controller.add(this)
-
   title = "Durak"
-
+ 
+  menuBar = new MenuBar {
+    font = myFont
+    contents += new Menu("Spielzug") {
+      font = myFont
+      contents += new MenuItem("Undo") { 
+        action = Action("Undo") { controller.undo } 
+        font = myFont 
+      } 
+      contents += new MenuItem("Redo") {
+        action = Action("Redo") { controller.redo }
+        font = myFont
+      }
+    }
+  }
+ 
   contents = getContent
-  //contents = statusPanel
-
+  maximize
   visible = true
 
   //Größe und Position auf dem Bildschirm
-  val framewidth = 1024
-  val frameheight = 768
+  /*val framewidth = 1024
+  val frameheight = 1024
   val screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize()
   location = new java.awt.Point((screenSize.width - framewidth) / 2, (screenSize.height - frameheight) / 2)
-  minimumSize = new java.awt.Dimension(framewidth, frameheight)
+  minimumSize = new java.awt.Dimension(framewidth, frameheight)*/
 
   def getContent = new BoxPanel(Orientation.Vertical) {
     contents += statePanel
@@ -160,10 +173,13 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
   def redraw = {
     contents = getContent
     repaint
+    maximize
+  
   }
 
   override def update = {
     redraw
+    
   }
 
   override def update(e: Event) = {
