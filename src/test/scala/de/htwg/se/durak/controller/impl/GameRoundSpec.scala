@@ -197,7 +197,7 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.round.notifyObservers(new RoundFinishedEvent)
 
       game.defenderLostLastRound should be(true)
-      game.getDurakName should be(durakName)
+      game.getDurakName should be(durakNameNew)
 
       game.deck.numberOfCards shouldNot be(emptyDeck.numberOfCards)
     }

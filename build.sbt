@@ -20,4 +20,5 @@ libraryDependencies += "log4j" % "log4j" % "1.2.14"
 
 libraryDependencies += "junit" % "junit" % "4.8" % "test"
 libraryDependencies += "com.google.inject" % "guice" % "3.0"
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 connectInput in run := true
