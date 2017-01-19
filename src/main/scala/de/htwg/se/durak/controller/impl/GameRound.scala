@@ -53,10 +53,6 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
 
   def updateRound = {
     round.state match {
-      case notFinished: RoundNotFinished => {
-        statusLine = "The round is not finished"
-        notifyObservers
-      }
       case finished: RoundFinished =>
         {
           setupForNextRound

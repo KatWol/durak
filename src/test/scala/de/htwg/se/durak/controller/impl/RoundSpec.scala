@@ -3,18 +3,23 @@ package de.htwg.se.durak.controller.impl
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
-import de.htwg.se.durak.model._
-import de.htwg.se.durak.controller.impl.round._
-import de.htwg.se.util.Observer
-import de.htwg.se.durak.model.Card
-import de.htwg.se.durak.model.Attack
-import de.htwg.se.durak.model.Player
 import com.google.inject.Guice
+
 import de.htwg.se.durak.DurakModule
-import de.htwg.se.durak.model.Player
+import de.htwg.se.durak.controller.impl.round.DefendersTurn
+import de.htwg.se.durak.controller.impl.round.FirstAttackersFirstTurn
+import de.htwg.se.durak.controller.impl.round.FirstAttackersTurn
+import de.htwg.se.durak.controller.impl.round.RoundFinished
+import de.htwg.se.durak.controller.impl.round.SecondAttackersTurn
+import de.htwg.se.durak.model.AttackFactory
 import de.htwg.se.durak.model.Card
-import de.htwg.se.durak.model.Attack
-import de.htwg.se.durak.model.Deck
+import de.htwg.se.durak.model.CardFactory
+import de.htwg.se.durak.model.DeckFactory
+import de.htwg.se.durak.model.Player
+import de.htwg.se.durak.model.PlayerFactory
+import de.htwg.se.durak.model.PlayerStatus
+import de.htwg.se.durak.model.Rank
+import de.htwg.se.durak.model.Suit
 
 class RoundSpec extends WordSpec with Matchers {
   val injector = Guice.createInjector(new DurakModule())
@@ -350,8 +355,10 @@ class RoundSpec extends WordSpec with Matchers {
       }
 
       "continue with the second attacker playing cards until the player ends his turn" in {
-        rounda.playCard(card14a)
+        rounda.playCard(card14a) //2. Attacker
         rounda.statusLine should be("The rank of this card is not on the table yet")
+        rounda.playCard(card23a) //2. Attacker
+        rounda.statusLine should be("Player does not have this card in his/her hand")
 
         rounda.playCard(card13a) //2. Attacker
         rounda.endTurn //2. Attacker
@@ -421,8 +428,9 @@ class RoundSpec extends WordSpec with Matchers {
       "continue with the defenders turn if the maximum amounts of attacks are played" in {
 
         val cardA = cardFactory.create(Suit.Diamonds.toString, Rank.Seven.toString)
+        val cardB = cardFactory.create(Suit.Diamonds.toString, Rank.Eight.toString)
         val playerA = playerFactory.create("Kathrin", 0, List[Card](cardA, cardA, cardA, cardA, cardA, cardA)).setStatus(PlayerStatus.Attacker).setTurn(true)
-        val playerB = playerFactory.create("David", 1, List[Card](card7, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
+        val playerB = playerFactory.create("David", 1, List[Card](cardB, card8, card9, card10, card11, card12)).setStatus(PlayerStatus.Defender)
         val playerC = playerFactory.create("Jakob", 2, List[Card](cardA, cardA, cardA, cardA, cardA, cardA)).setStatus(PlayerStatus.Attacker)
 
         val newRound = new Round(deckFactory.create(Rank.Seven), List[Player](playerA, playerB), Suit.Hearts)
@@ -439,13 +447,15 @@ class RoundSpec extends WordSpec with Matchers {
 
         val newestRound = new Round(deckFactory.create(Rank.Seven), List[Player](playerA, playerB, playerC), Suit.Hearts)
 
-        newestRound.playCard(cardA)
+        newestRound.playCard(cardA) //1. Attacker
         newestRound.endTurn
-        newestRound.playCard(cardA)
-        newestRound.playCard(cardA)
-        newestRound.playCard(cardA)
-        newestRound.playCard(cardA)
-        newestRound.playCard(cardA)
+        newestRound.playCard(cardB, attackFactory.create(cardA)) //Defender
+        newestRound.state shouldBe a[SecondAttackersTurn]
+        newestRound.playCard(cardA) //2. Attacker
+        newestRound.playCard(cardA) //2. Attacker
+        newestRound.playCard(cardA) //2. Attacker
+        newestRound.playCard(cardA) //2. Attacker
+        newestRound.playCard(cardA) //2. Attacker
 
         newRound.state shouldBe a[DefendersTurn]
         newRound.getCurrentPlayer.name should be("David")

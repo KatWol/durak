@@ -69,6 +69,8 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.getCurrentPlayersCardsString shouldBe a[String]
       game.getCurrentPlayersCards shouldBe a[List[_]]
       game.getLastCardFromDeck.isTrump should be(true)
+      game.getDurakName should be("")
+      game.getDefenderLost should be(true)
     }
 
     var defenderName = game.round.getDefender.name
@@ -155,11 +157,49 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.endTurn
 
       game.deck.numberOfCards should be(0)
+      val emptyDeck = game.deck
+      val durakName = game.round.getDefender.name
 
       game.round.players = (List(game.round.getDefender(), game.round.getFirstAttacker().setCards(List())))
+      game.round.defenderWon = false
+      game.round.state = new RoundFinished
+      game.round.notifyObservers(new RoundFinishedEvent)
+
+      game.defenderLostLastRound should be(false)
+      game.getDurakName should be(durakName)
+
+      game.deck.numberOfCards shouldNot be(emptyDeck.numberOfCards)
+
+      game = new GameRound(List[String]("Kathrin", "Jakob", "David", "Thomas"), Rank.Eight, true)
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.deck.numberOfCards should be(0)
+      val emptyDeckNew = game.deck
+      val durakNameNew = game.round.getFirstAttacker.name
+
+      game.round.players = List(game.round.getDefender().setCards(List()), game.round.getFirstAttacker())
       game.round.defenderWon = true
       game.round.state = new RoundFinished
+      game.round.notifyObservers(new RoundFinishedEvent)
 
+      game.defenderLostLastRound should be(true)
+      game.getDurakName should be(durakName)
+
+      game.deck.numberOfCards shouldNot be(emptyDeck.numberOfCards)
     }
 
     "should be created by a GameRoundFactory" in {
