@@ -98,16 +98,21 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
   
 
   
-  def tablePanel = new GridPanel(2,6) {          
+  def tablePanel = new GridPanel(3,6) {          
     for (row <- 0 to 1; col <- 0 to 5) {
       contents += new Label {  
         icon = new ImageIcon(attackImages(row)(col))
           listenTo(mouse.clicks)
           reactions += {
-            case _: event.MouseClicked => numberOfAttack = col
+            case _: event.MouseClicked => { numberOfAttack = col; println(numberOfAttack);  }
           }
        }        
-    }   
+    }
+    for (col <- 0 to 5) { 
+      if (col == numberOfAttack) {
+        contents += new Label {text = "___________"; font = myFont; verticalAlignment = Alignment.Top}
+      } else contents +=  new Label()
+    }
   }
  
 
@@ -179,7 +184,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
         var defenderLost: String = ""
         if (controller.getDefenderLost) defenderLost = "won"
         else defenderLost = "lost"
-        showDialog("Round finished", "This round is finished. The defender " + defenderLost + " the last round.")
+        //showDialog("Round finished", "This round is finished. The defender " + defenderLost + " the last round.")
         redraw
       }
 
