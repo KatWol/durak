@@ -86,21 +86,19 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
       font = myFont
     }
 
-    contents += new Label {
-      text = "Number of cards in deck:"
-      horizontalAlignment = Alignment.Left
-      font = myFont
-    }
   }
   
-  def deckPanel = new GridPanel(1,6) {
-    contents += new Label { icon = new ImageIcon(path + trumpCard.suit + trumpCard.rank + ".jpg") }
-    
+  //def deckPanel = new GridPanel(2,6) {
+  def deckPanel = new FlowPanel {
+    contents += 
+      //new Label { text = "Trump:"; font = myFont }
+      new Label { text = "Cards in Deck: " + controller.getNumberOfCardsInDeck + "   "; font = myFont }    
+    contents += new Label { icon = new ImageIcon(path + trumpCard.suit + trumpCard.rank + ".jpg") }   
   }
   
 
   
-  def tablePanel = new GridPanel(2,6) {       
+  def tablePanel = new GridPanel(2,6) {          
     for (row <- 0 to 1; col <- 0 to 5) {
       contents += new Label {  
         icon = new ImageIcon(attackImages(row)(col))
@@ -114,6 +112,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
  
 
   def playerPanel = new FlowPanel { 
+    
     for (card <- controller.getCurrentPlayersCards) {      
         contents += new Label {
           icon = new ImageIcon(path + card.suit + card.rank + ".jpg")
