@@ -41,13 +41,6 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
   maximize
   visible = true
 
-  //Größe und Position auf dem Bildschirm
-  /*val framewidth = 1024
-  val frameheight = 1024
-  val screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize()
-  location = new java.awt.Point((screenSize.width - framewidth) / 2, (screenSize.height - frameheight) / 2)
-  minimumSize = new java.awt.Dimension(framewidth, frameheight)*/
-
   def getContent = new BoxPanel(Orientation.Vertical) {
     contents += statePanel
     contents += tablePanel
@@ -96,7 +89,26 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
       font = myFont
     }
   }
+  def attacks = controller.getAttacksOnTable
 
+  def attackImages: Array[Array[String]] =  {
+    var result = Array.ofDim[String](2, 6)
+    for (row <- 0 to 5) {
+      if (attacks.size - 1 >= row) {
+        result(0)(row) = path + attacks(row).attackingCard.suit + attacks(row).attackingCard.rank + ".jpg"
+        if (attacks(row).defendingCard != null) {
+          result(1)(row) = path + attacks(row).defendingCard.suit + attacks(row).defendingCard.rank + ".jpg"
+        } else {
+           result(1)(row) = path + "empty.jpg"
+        }
+      } else {
+        result(0)(row) = path + "empty.jpg"
+        result(1)(row) = path + "empty.jpg"        
+      }
+    }
+    return result
+  }
+  
   def tablePanel = new GridPanel(1, 2) {
 
     contents += new Label {
@@ -104,33 +116,23 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
       text = "Number of cards in deck: " + controller.getNumberOfCardsInDeck
       horizontalAlignment = Alignment.Left
     }
-
-    contents += new FlowPanel() {
-      for (attack <- controller.getAttacksOnTable) {
-        contents += new BoxPanel(Orientation.Vertical) {
-          contents += new Label {
-            icon = new ImageIcon(path + attack.attackingCard.suit + attack.attackingCard.rank + ".jpg")
+    
+    contents += new GridPanel(2,6) {
+    
+      for (row <- 0 to 1; col <- 0 to 5) {
+        contents += new Label {  
+          icon = new ImageIcon(attackImages(row)(col))
             listenTo(mouse.clicks)
             reactions += {
-              case _: event.MouseClicked => {
-                numberOfAttack = controller.getAttacksOnTable.indexOf(attack)
-                println(numberOfAttack)
-              }
+              case _: event.MouseClicked => numberOfAttack = col
             }
-
-          }
-          contents += new Label {
-            if (attack.defendingCard != null) {
-              icon = new ImageIcon(path + attack.defendingCard.suit + attack.defendingCard.rank + ".jpg")
-            }
-          }
-
-        }
-      }
-
-    }
+          }        
+      }    
+    
+    }   
 
   }
+ 
 
   def playerPanel = new FlowPanel() {
     contents += new Label {
@@ -153,11 +155,6 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
             }
           }
 
-        }
-        contents += new Label {
-          font = myFont
-          text = card.suit + " " + card.rank
-          horizontalAlignment = Alignment.Left
         }
       }
     }
