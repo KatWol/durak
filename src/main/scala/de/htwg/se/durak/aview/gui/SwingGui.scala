@@ -15,14 +15,27 @@ import de.htwg.se.durak.controller.impl.RoundFinishedEvent
 import de.htwg.se.durak.controller.impl.GameRoundFinishedEvent
 
 class SwingGui(var controller: GameRoundController) extends Frame with Observer {
-  final val myFont = new Font("Arial", 0, 25)
-  final val path = "img/"
-  final val panelSize = new java.awt.Dimension(200,1024)
+  final val lowDpi = false
+  //final val myFont = new Font("Arial", 0, 25)
+  //final val path = "img/"
+  //final val panelSize = new java.awt.Dimension(200,1024)
+  var myFont: Font = null
+  var path: String = null
+  
+  if (lowDpi) {
+    myFont = new Font("Arial", 0, 12)
+    path = "img/"
+  } else {
+    myFont = new Font("Arial", 0, 25)
+    path = "img/"
+  }
+  
+  
   var numberOfAttack: Int = -1
   
 
   controller.add(this)
-  title = "Durak"
+  title = "Durak for Windows 3.1"
  
   menuBar = new MenuBar {
     font = myFont
