@@ -109,13 +109,13 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
     return result
   }
   
-  def tablePanel = new GridPanel(1, 2) {
+  def tablePanel = new GridPanel(1,1) {
 
-    contents += new Label {
+    /*contents += new Label {
       font = myFont
       text = "Number of cards in deck: " + controller.getNumberOfCardsInDeck
       horizontalAlignment = Alignment.Left
-    }
+    }*/
     
     contents += new GridPanel(2,6) {
     
@@ -135,11 +135,11 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
  
 
   def playerPanel = new FlowPanel() {
-    contents += new Label {
+    /*contents += new Label {
       font = myFont
       text = "Cards of " + controller.getCurrentPlayerName
       horizontalAlignment = Alignment.Left
-    }
+    }*/
     for (card <- controller.getCurrentPlayersCards) {
       contents += new BoxPanel(Orientation.Vertical) {
         contents += new Label {
