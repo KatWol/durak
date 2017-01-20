@@ -58,8 +58,9 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
           setupForNextRound
           statusLine = "A new round has started"
           if (isGameRoundFinished) {
-            statusLine = "The game round is finished. \n******Durak: " + activePlayers(0).name + "\nStarting a new game round."
-            durakLastGameRound = activePlayers(0).name
+            if (activePlayers.size == 0) durakLastGameRound = round.getFirstAttacker.name
+            else durakLastGameRound = activePlayers(0).name
+            statusLine = "The game round is finished. \n******Durak: " + durakLastGameRound + "\nStarting a new game round."
             startNewGameRound
             notifyObservers(new GameRoundFinishedEvent)
           } else {
@@ -79,8 +80,11 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
     if (round.defenderWon) activePlayers = setPlayerStatusForNextRound(indexOfDefender)
     else activePlayers = setPlayerStatusForNextRound(indexOfDefender + 1)
 
-    round = new Round(deck, activePlayers, trumpSuit)
-    round.add(this)
+    if (activePlayers.size != 0) {
+      round = new Round(deck, activePlayers, trumpSuit)
+      round.add(this)
+    }
+
   }
 
   def dealCards: Unit = {
@@ -124,7 +128,10 @@ class GameRound(val playerNames: List[String] = List[String]("Kathrin", "Jakob")
     else nextStartPlayer + allPlayers.size
   }
 
-  def getNextDefender: Int = activePlayers(0).number
+  def getNextDefender: Int = {
+    if (activePlayers.size > 0) activePlayers(0).number
+    else 0
+  }
 
   //*********** Implementierung des Traits ************************************************************
   override def playCard(suit: String, rank: String, attack: String) = round.playCard(suit, rank, attack)
