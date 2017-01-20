@@ -35,7 +35,7 @@ class DefendersTurn extends RoundNotFinished {
     if (statusLine == "" && event != null) {
       round.defenderWon = true
       changeState(round, new RoundFinished)
-      round.notifyObservers(event)
+      round.notifyObservers(new RoundFinishedEvent)
     } // Defender hat alle Attacks verteidig, aber es wurde noch nicht die maximale Anzahl an Attacks erreicht
     else if (statusLine != "" && event == null) {
       val nextCurrentPlayer = round.getNextCurrentPlayer
@@ -47,7 +47,6 @@ class DefendersTurn extends RoundNotFinished {
     } // Defender hat die Runde beendet, bevor er alle Attacks verteidigt hat und verliert damit
     else if (statusLine == "" && event == null) {
       round.defenderWon = false
-      changeState(round, new RoundFinished)
       changeState(round, new RoundFinished)
       round.notifyObservers(new RoundFinishedEvent)
 

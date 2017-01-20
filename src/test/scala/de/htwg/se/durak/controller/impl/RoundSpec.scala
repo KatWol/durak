@@ -497,13 +497,13 @@ class RoundSpec extends WordSpec with Matchers {
 
       "return a message if a player trys to play a card after the round is finished" in {
         rounda.playCard(card13a)
-        rounda.statusLine should be("The round is finished. Start a new round by entering s")
+        rounda.statusLine should be("The round is finished")
 
       }
 
       "return a message if a player trys to end a turn after the round is finished" in {
         rounda.endTurn
-        rounda.statusLine should be("The round is finished. Start a new round by entering s")
+        rounda.statusLine should be("The round is finished")
       }
 
     }

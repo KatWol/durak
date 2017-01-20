@@ -139,7 +139,9 @@ class GameRoundSpec extends WordSpec with Matchers {
     }
 
     "set correct player statuses for next round" in {
+      val observer = new DummyObserver2
       game = new GameRound(List[String]("Kathrin", "Jakob", "David", "Thomas"), Rank.Eight, true)
+      game.add(observer)
       game.round.playCard(game.round.getCurrentPlayer.cards(0))
       game.endTurn
       game.endTurn
@@ -169,8 +171,11 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.getDurakName should be(durakName)
 
       game.deck.numberOfCards shouldNot be(emptyDeck.numberOfCards)
+      observer.isTriggered should be(true)
 
+      var observer2 = new DummyObserver2
       game = new GameRound(List[String]("Kathrin", "Jakob", "David", "Thomas"), Rank.Eight, true)
+      game.add(observer2)
       game.round.playCard(game.round.getCurrentPlayer.cards(0))
       game.endTurn
       game.endTurn
@@ -188,7 +193,6 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.endTurn
 
       game.deck.numberOfCards should be(0)
-      val emptyDeckNew = game.deck
       val durakNameNew = game.round.getFirstAttacker.name
 
       game.round.players = List(game.round.getDefender().setCards(List()), game.round.getFirstAttacker())
@@ -200,6 +204,41 @@ class GameRoundSpec extends WordSpec with Matchers {
       game.getDurakName should be(durakNameNew)
 
       game.deck.numberOfCards shouldNot be(emptyDeck.numberOfCards)
+      observer2.isTriggered should be(true)
+
+      //****
+      var observer3 = new DummyObserver2
+      game = new GameRound(List[String]("Kathrin", "Jakob", "David", "Thomas"), Rank.Eight, true)
+      game.add(observer3)
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.round.playCard(game.round.getCurrentPlayer.cards(0))
+      game.endTurn
+      game.endTurn
+
+      game.deck.numberOfCards should be(0)
+      val durakName2 = game.round.getFirstAttacker.name
+
+      game.round.players = List(game.round.getDefender().setCards(List()), game.round.getFirstAttacker().setCards(List()))
+      game.round.defenderWon = true
+      game.round.state = new RoundFinished
+      game.round.notifyObservers(new RoundFinishedEvent)
+
+      game.defenderLostLastRound should be(true)
+      game.getDurakName should be(durakName2)
+
+      game.deck.numberOfCards shouldNot be(emptyDeck.numberOfCards)
+      observer3.isTriggered should be(true)
     }
 
     "should be created by a GameRoundFactory" in {
@@ -213,4 +252,15 @@ class GameRoundSpec extends WordSpec with Matchers {
 class DummyObserver(val key: String) extends Observer {
   def update(): Unit = {}
   def update(e: Event): Unit = {}
+}
+
+class DummyObserver2 extends Observer {
+  var isTriggered: Boolean = false
+  def update(): Unit = {}
+  def update(e: Event): Unit = {
+    e match {
+      case e: RoundFinishedEvent => {}
+      case e: GameRoundFinishedEvent => isTriggered = true
+    }
+  }
 }
