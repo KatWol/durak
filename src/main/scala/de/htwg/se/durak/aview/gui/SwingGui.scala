@@ -17,7 +17,9 @@ import de.htwg.se.durak.controller.impl.GameRoundFinishedEvent
 class SwingGui(var controller: GameRoundController) extends Frame with Observer {
   final val myFont = new Font("Arial", 0, 25)
   final val path = "img/"
+  final val panelSize = new java.awt.Dimension(200,1024)
   var numberOfAttack: Int = -1
+  
 
   controller.add(this)
   title = "Durak"
@@ -43,6 +45,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
 
   def getContent = new BoxPanel(Orientation.Vertical) {
     contents += statePanel
+    contents += deckPanel
     contents += tablePanel
     contents += playerPanel
 
@@ -89,6 +92,55 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
       font = myFont
     }
   }
+  
+  def deckPanel = new GridPanel(1,6) {
+    contents += new Label { icon = new ImageIcon(path + trumpCard.suit + trumpCard.rank + ".jpg") }
+    
+  }
+  
+
+  
+  def tablePanel = new GridPanel(2,6) {       
+    for (row <- 0 to 1; col <- 0 to 5) {
+      contents += new Label {  
+        icon = new ImageIcon(attackImages(row)(col))
+          listenTo(mouse.clicks)
+          reactions += {
+            case _: event.MouseClicked => numberOfAttack = col
+          }
+       }        
+    }   
+  }
+ 
+
+  def playerPanel = new FlowPanel { 
+    for (card <- controller.getCurrentPlayersCards) {      
+        contents += new Label {
+          icon = new ImageIcon(path + card.suit + card.rank + ".jpg")
+          listenTo(mouse.clicks)
+          reactions += {
+            case _: event.MouseClicked => {
+              if (controller.getCurrentPlayerStatus == "Attacker") {
+                controller.playCard(card.suit.toString(), card.rank.toString())
+              } else {
+                controller.playCard(card.suit.toString(), card.rank.toString(), numberOfAttack.toString())
+              }
+            }
+          }
+
+        }
+      }    
+    contents += new Button("") {
+      action = Action("Finish turn") {
+        controller.endTurn
+        numberOfAttack = -1
+      }
+      font = myFont
+    }
+  }
+
+  def trumpCard = controller.getLastCardFromDeck
+  
   def attacks = controller.getAttacksOnTable
 
   def attackImages: Array[Array[String]] =  {
@@ -109,64 +161,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
     return result
   }
   
-  def tablePanel = new GridPanel(1,1) {
-
-    /*contents += new Label {
-      font = myFont
-      text = "Number of cards in deck: " + controller.getNumberOfCardsInDeck
-      horizontalAlignment = Alignment.Left
-    }*/
-    
-    contents += new GridPanel(2,6) {
-    
-      for (row <- 0 to 1; col <- 0 to 5) {
-        contents += new Label {  
-          icon = new ImageIcon(attackImages(row)(col))
-            listenTo(mouse.clicks)
-            reactions += {
-              case _: event.MouseClicked => numberOfAttack = col
-            }
-          }        
-      }    
-    
-    }   
-
-  }
- 
-
-  def playerPanel = new FlowPanel() {
-    /*contents += new Label {
-      font = myFont
-      text = "Cards of " + controller.getCurrentPlayerName
-      horizontalAlignment = Alignment.Left
-    }*/
-    for (card <- controller.getCurrentPlayersCards) {
-      contents += new BoxPanel(Orientation.Vertical) {
-        contents += new Label {
-          icon = new ImageIcon(path + card.suit + card.rank + ".jpg")
-          listenTo(mouse.clicks)
-          reactions += {
-            case _: event.MouseClicked => {
-              if (controller.getCurrentPlayerStatus == "Attacker") {
-                controller.playCard(card.suit.toString(), card.rank.toString())
-              } else {
-                controller.playCard(card.suit.toString(), card.rank.toString(), numberOfAttack.toString())
-              }
-            }
-          }
-
-        }
-      }
-    }
-    contents += new Button("") {
-      action = Action("Finish turn") {
-        controller.endTurn
-        numberOfAttack = -1
-      }
-      font = myFont
-    }
-  }
-
+  
   def redraw = {
     contents = getContent
     repaint
