@@ -24,7 +24,7 @@ class SwingGui(var controller: GameRoundController) extends Frame with Observer 
   
   if (lowDpi) {
     myFont = new Font("Arial", 0, 12)
-    path = "img/"
+    path = "img/small/"
   } else {
     myFont = new Font("Arial", 0, 25)
     path = "img/"
